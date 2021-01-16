@@ -24,7 +24,7 @@ List.o : List.c List.h
 	gcc -std=c11 -Wall -c List.c
 
 clean :
-	rm -f Lex ListClient Lex.o ListClient.o List.o
+	rm -f  ListClient  ListClient.o List.o
 
 checkClient : 
 	valgrind --leak-check=full ListClient
