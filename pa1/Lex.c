@@ -1,3 +1,10 @@
+/*********************************************************************************
+ * * Tanishq Patil, tmpatil
+ * * 2021 Winter CSE 101 pa1
+ * * Lex.c
+ * * The main client file for pa1
+ * *********************************************************************************/
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
