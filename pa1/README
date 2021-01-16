@@ -1,0 +1,7 @@
+pa1 contents:
+1) List.h: it is the library containing the List data structure.
+2)List.c : It is the source code file for List.h and describes all the functions in List.h
+3)ListClient.c : it is the provided program to test our List ADT.
+4)Lex.c : It contains the main() function for this assignment, it is the client program which reads in given files
+and writes its contents in a disred order to a different outfile.
+
