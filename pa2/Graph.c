@@ -3,29 +3,31 @@
 #include<string.h>
 #include<stdlib.h>
 #include<stdio.h>
+#define NIL -1
+#define INF -2
+#define W 0
+#define Gr 1
+#define B 2
 
 // private type GraphObj
 typedef struct GraphObj{
-    List *Array = NULL;
-    int *colors = NULL;
-    int *parent = NULL;
-    int *distance = NULL;
-    int vertices = 0;
-    int size = 0;
-    int source = 0;
+    List *Array;
+    int *colors ;
+    int *parent ;
+    int *distance ;
+    int vertices ;
+    int size ;
+    int source ;
 }GraphObj;
 
 
 /*** Constructors-Destructors ***/
-/* 0   = white
-    1 =  grey
-    2 = black;
-    */
+
 
 Graph newGraph(int n){
     Graph G = NULL;
     G = calloc(1,sizeof(Graph));
-    G->Array = (List *)calloc(n + 1, sizeof(List));
+    G->Array = calloc(n + 1, sizeof(List));
     for(int i = 0; i < n+1; i++){
         newList(G->Array[i]);
     }
@@ -54,6 +56,11 @@ int getOrder(Graph G){
 }
 
 int getSize(Graph G){
+    int tot= 0;
+    for(int i = 0; i <= getOrder(G);i++){
+        tot = tot + Length(G->Array[i]);
+    }
+    G->size = tot/2;
     return G->size;
 }
 int getSource(Graph G){
