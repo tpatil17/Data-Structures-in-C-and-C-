@@ -40,15 +40,15 @@ Graph newGraph(int n){
     return G; 
 }
 void freeGraph(Graph* pG){
-    for(int i = 0; i <= pG->vertices; i++){
-        freeList(pG->Array[i]);
+    if(*pG != NULL && pG !==NULL){
+        makeNull(*pG);
+        free(*pG->Array);
+        free(*pG->colors);
+        free(*pG->parent);
+        free(*pG->distance);
+        free(*pG);
+        *pG = NULL;
     }
-    free(pG->Array);
-    free(pG->colors);
-    free(pG->parent);
-    free(pG->distnce);
-    free(&pG);
-    *pG = NULL;
 }
 /*** Access functions ***/
 int getOrder(Graph G){
@@ -67,7 +67,7 @@ int getSource(Graph G){
     return G->source;
 }
 int getParent(Graph G, int u){
-    if( u <= 0 || u > gerOrder(G)){
+    if( u <= 0 || u > getOrder(G)){
         printf("u is invalid\n");
         exit(EXIT_FAILURE);
     }
@@ -77,7 +77,7 @@ int getParent(Graph G, int u){
         return G->parent[u];
 }
 int getDist(Graph G, int u){
-    if( u <= 0 || u > gerOrder(G)){
+    if( u <= 0 || u > getOrder(G)){
         printf("u is invalid\n");
         exit(EXIT_FAILURE);
     }
@@ -87,11 +87,11 @@ int getDist(Graph G, int u){
     return INF;
 }
 void getPath(List L, Graph G, int u){
-    if( u <= 0 || u > gerOrder(G)){
+    if( u <= 0 || u > getOrder(G)){
         printf("u is invalid\n");
         exit(EXIT_FAILURE);
     }
-    if (getSource(G) == NULL){
+    if (getSource(G) == NIL){
         printf("BFS not run!\n");
         exit(EXIT_FAILURE);
     }
@@ -99,7 +99,7 @@ void getPath(List L, Graph G, int u){
         append(L,u);
         return;
     }
-    else if(G->parent[u] == NULL){
+    else if(G->parent[u] == NIL){
         printf("%d Not reachable from %d\n", u ,getSource(G));
         exit(EXIT_FAILURE);
     }
