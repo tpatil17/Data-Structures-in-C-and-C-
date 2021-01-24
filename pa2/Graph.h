@@ -1,8 +1,15 @@
 #ifndef GRAPH_H_
 #define GRAPH_H_
+#include "List.h"
+#include<stdio.h>
+#define NIL -1
+#define INF -2
+#define W 0
+#define Gr 1
+#define B 2
 
 //Grpah.h 
-typedef struct *GraphObj Graph;
+typedef struct GraphObj* Graph;
 /*** Constructors-Destructors ***/
 Graph newGraph(int n);
 void freeGraph(Graph* pG);
