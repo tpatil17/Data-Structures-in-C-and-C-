@@ -12,7 +12,7 @@
 
 #ifndef LIST_H_INCLUDE_
 #define LIST_H_INCLUDE_
-
+#include<stdio.h>
 
 // Exported Type --------------------------------------------------------------
 typedef struct ListObj* List;
