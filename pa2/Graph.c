@@ -32,23 +32,38 @@ Graph newGraph(int n){
     G->parent = calloc(n+1, sizeof(int));
     G->distance = calloc(n+1, sizeof(int));
     for(int i = 1; i <= n; i++){
+<<<<<<< HEAD
 	G->Array[i] = newList();
 	G->colors[i] = W;
 	G->parent[i] = NIL;
 	G->distance[i] = INF;
 	}
+=======
+        G->Array[i] = newList();
+        G->colors[i] = W;
+        G->parent[i] = NIL;
+       G->distance[i] = INF;
+        }
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
 
     G->vertices = n;
     G->size = 0;
     G->source = NIL;
-    return G; 
+    return G;
 }
 void freeGraph(Graph* pG){
     if(*pG != NULL && pG !=NULL){
+<<<<<<< HEAD
 	Graph G = *pG;
         for(int i = 1; i <= getOrder(G); i++){
 		freeList(&(G->Array[i]));
 	}
+=======
+        Graph G = *pG;
+        for(int i = 1; i <= getOrder(G); i++){
+                freeList(&(G->Array[i]));
+        }
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
         free(G->Array);
         free(G->colors);
         free(G->parent);
@@ -108,37 +123,61 @@ void getPath(List L, Graph G, int u){
     }
     else if(G->parent[u] == NIL){
         append(L,NIL);
+<<<<<<< HEAD
     }
     else{
         getPath(L, G, getParent(G, u));
 	append(L,u);
+=======
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
     }
+   
 }
 /*** Manipulation procedures ***/
 void makeNull(Graph G){
     for(int i = 1; i <= getOrder(G); i++){
         clear(G->Array[i]);
+<<<<<<< HEAD
 	free(G->Array[i]);	
 	
+=======
+        free(G->Array[i]);
+
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
     }
 }
 void addEdge(Graph G, int u, int v){
     if(length(G->Array[u])!=0){		
 
         for(moveFront(G->Array[u]);index(G->Array[u]) < length(G->Array[u]);moveNext(G->Array[u])){
+<<<<<<< HEAD
 		if(index(G->Array[u]) < 0){
 			printf("%d\n", index(G->Array[u]));
 			exit(EXIT_FAILURE);
 		}
             
+=======
+                if(index(G->Array[u]) < 0){
+                        printf("%d\n", index(G->Array[u]));
+                        exit(EXIT_FAILURE);
+                }
+
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
             if(get(G->Array[u]) > v){
                 insertBefore(G->Array[u],v);
                 break;
             }
+<<<<<<< HEAD
 	    if(index(G->Array[u]) == (length(G->Array[u])-1)){
 		append(G->Array[u], v);
 		break;
 		}
+=======
+            if(index(G->Array[u]) == (length(G->Array[u])-1)){
+                append(G->Array[u], v);
+                break;
+                }
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
         }
     }
     if(length(G->Array[u]) == 0){
@@ -147,12 +186,21 @@ void addEdge(Graph G, int u, int v){
     if(length(G->Array[v])!=0){
 
         for(moveFront(G->Array[v]);index(G->Array[v]) < length(G->Array[v]);moveNext(G->Array[v])){
+<<<<<<< HEAD
         	if(index(G->Array[v]) < 0){
                         printf("%d\n", index(G->Array[v]));
                         exit(EXIT_FAILURE);
 		}    
 	
 		if(get(G->Array[v]) > u){
+=======
+                if(index(G->Array[v]) < 0){
+                        printf("%d\n", index(G->Array[v]));
+                       exit(EXIT_FAILURE);
+                }
+
+                if(get(G->Array[v]) > u){
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
                 insertBefore(G->Array[v], u);
                 break;
             }
@@ -170,16 +218,28 @@ void addArc(Graph G, int u, int v){
     if(length(G->Array[u])!=0){
 
         for(moveFront(G->Array[u]);index(G->Array[u]) < length(G->Array[u]);moveNext(G->Array[u])){
+<<<<<<< HEAD
  	if(index(G->Array[u]) < 0){
                         printf("%d\n", index(G->Array[u]));
                         exit(EXIT_FAILURE);
 }	
 	           
+=======
+        if(index(G->Array[u]) < 0){
+                        printf("%d\n", index(G->Array[u]));
+                        exit(EXIT_FAILURE);
+}
+
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
             if(get(G->Array[u]) > v){
                 insertBefore(G->Array[u],v);
                 break;
             }
+<<<<<<< HEAD
 	    if(index(G->Array[u]) == (length(G->Array[u])-1)){
+=======
+            if(index(G->Array[u]) == (length(G->Array[u])-1)){
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
                 append(G->Array[u], v);
                 break;
                 }
@@ -198,6 +258,7 @@ void BFS(Graph G, int s){
     append(L,s);
     moveFront(L);
     while(length(L) >0){
+<<<<<<< HEAD
 	if(index(L) < 0){
 	 printf("error found\n");
 	exit(EXIT_FAILURE);
@@ -211,6 +272,21 @@ void BFS(Graph G, int s){
        	 	exit(EXIT_FAILURE);
         	}
 		
+=======
+        if(index(L) < 0){
+         printf("error found\n");
+        exit(EXIT_FAILURE);
+        }
+        int x = get(L);
+        G->source = get(L);
+        deleteFront(L);
+        for(moveFront(G->Array[x]); index(G->Array[x]) >= 0 && index(G->Array[x]) < length(G->Array[x]);moveNext(G->Array[x])){
+                if(index(G->Array[x]) < 0){
+                 printf("error found\n");
+                exit(EXIT_FAILURE);
+                }
+
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
 
             if(G->colors[get(G->Array[x])] == W){ // if cursor undiscovered 
                 G->colors[get(G->Array[x])] = Gr; // discover
@@ -223,12 +299,19 @@ void BFS(Graph G, int s){
         moveFront(L);
     }
 }
+
 /*** Other operations ***/
 void printGraph(FILE* out, Graph G){
     for(int i = 1; i <= G->vertices; i++){
         fprintf(out, "%d:",i);
         printList(out, G->Array[i]);
+<<<<<<< HEAD
 	printf("\n");
     }
   
+=======
+        printf("\n");
+    }
+
+>>>>>>> c80ef28a95fd2ebb75877baecbd2278c462a6807
 }
