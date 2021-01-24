@@ -25,11 +25,11 @@ typedef struct GraphObj{
 
 
 Graph newGraph(int n){
-    Graph G = NULL;
-    G = calloc(1,sizeof(Graph));
+    Graph G;
+    G = malloc(sizeof(Graph));
     G->Array = calloc(n + 1, sizeof(List));
     for(int i = 0; i < n+1; i++){
-        newList(G->Array[i]);
+        G->Array[i] = newList();
     }
     G->colors = calloc(n+1,sizeof(int));
     G->parent = calloc(n+1,sizeof(int));
@@ -58,7 +58,7 @@ int getOrder(Graph G){
 int getSize(Graph G){
     int tot= 0;
     for(int i = 0; i <= getOrder(G);i++){
-        tot = tot + Length(G->Array[i]);
+        tot = tot + length(G->Array[i]);
     }
     G->size = tot/2;
     return G->size;
@@ -114,35 +114,35 @@ void makeNull(Graph G){
     }
 }
 void addEdge(Graph G, int u, int v){
-    if(Length(G->Array[u])!=0){
+    if(length(G->Array[u])!=0){
 
-        for(moveFront(G->Array[u]);Index(G->Array[u]) < Length(G->array[u]);moveNext(G->Array[u])){
+        for(moveFront(G->Array[u]);index(G->Array[u]) < length(G->Array[u]);moveNext(G->Array[u])){
             if(get(G->Array[u]) > v){
                 insertBefore(G->Array[u],v);
                 break;
             }
         }
     }
-    if(Length(G->Array[u]) == 0){
+    if(length(G->Array[u]) == 0){
         append(G->Array[u], v);
     }
-    if(Length(G->Array[v])!=0){
+    if(length(G->Array[v])!=0){
 
-        for(moveFront(G->Array[v]);Index(G->Array[v]) < Length(G->array[v]);moveNext(G->Array[v])){
+        for(moveFront(G->Array[v]);index(G->Array[v]) < length(G->Array[v]);moveNext(G->Array[v])){
             if(get(G->Array[v]) > u){
                 insertBefore(G->Array[v], u);
                 break;
             }
         }
     }
-    if(Length(G->Array[v]) == 0){
+    if(length(G->Array[v]) == 0){
         append(G->Array[v], u);
     }
 }
 void addArc(Graph G, int u, int v){
-    if(Length(G->Array[u])!=0){
+    if(length(G->Array[u])!=0){
 
-        for(moveFront(G->Array[u]);Index(G->Array[u]) < Length(G->array[u]);moveNext(G->Array[u])){
+        for(moveFront(G->Array[u]);index(G->Array[u]) < length(G->Array[u]);moveNext(G->Array[u])){
             
             if(get(G->Array[u]) > v){
                 insertBefore(G->Array[u],v);
@@ -150,7 +150,7 @@ void addArc(Graph G, int u, int v){
             }
         }
     }
-    if(Length(G->Array[u]) == 0){
+    if(length(G->Array[u]) == 0){
         append(G->Array[u], v);
     }
 }
@@ -175,7 +175,7 @@ void BFS(Graph G, int s){
         int x = get(L);
         G->source = get(L);
         deleteFront(L);
-        for(moveFront(G->Array[x]); Index(G->Array[x]) < Length(G->Array[x]);moveNext(G->Array[x])){
+        for(moveFront(G->Array[x]); Index(G->Array[x]) < length(G->Array[x]);moveNext(G->Array[x])){
             if(G->colors[get(G->Array[x])] == W){ // if cursor undiscovered 
                 G->colors[get(G->Array[x])] = Gr; // discover
                 G->distance[get(G->Array[x])] = G->distance[x] + 1;
@@ -191,6 +191,6 @@ void BFS(Graph G, int s){
 void printGraph(FILE* out, Graph G){
     for(int i = 1; i <= G->vertices; i++){
         fprintf(out, "%d:",i);
-        printList(out, G->Array[i])
+        printList(out, G->Array[i]);
     }
 }
