@@ -1,0 +1,16 @@
+*********************************************************************************
+ * * Tanishq Patil, tmpatil
+ * * 2021 Winter CSE 101 pa2
+ * * pa2
+ * * README
+ * *********************************************************************************/
+
+This Lab has a client named FindPath which prints Graph according to the given input.
+1) Graph.h : The  header file for graph ADT
+2) Graph.c : The code for Graph ADT
+3) List.h : Header for List ADT
+4) List.c : code for List ADT
+5) GraphTest.c : basic function ADT test
+6) FindPath.c : The Client File
+7) Makefile : to build the program (type make)
+
