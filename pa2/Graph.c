@@ -1,3 +1,16 @@
+/*********************************************************************************
+ *  * * Tanishq Patil, tmpatil
+ *  * * 2021 Winter CSE 101 pa1
+ *  * * Graph.c
+ *  * * code for Graph ADT
+ *  * *********************************************************************************/
+
+//-----------------------------------------------------------------------------
+//// Graph.c
+//// Implementation file for Graph ADT
+////-----------------------------------------------------------------------------
+
+
 #include "List.h"
 #include "Graph.h"
 #include<string.h>
@@ -77,6 +90,7 @@ int getSource(Graph G){
 	}
     return G->source;
 }
+
 int getParent(Graph G, int u){
    if(G == NULL){
 	printf(" G is null getparent\n");
@@ -94,6 +108,7 @@ int getParent(Graph G, int u){
 	}
         return G->parent[u];
 }
+
 int getDist(Graph G, int u){
    if(G == NULL){
 	printf(" Graph is not valid: get dist\n");
@@ -123,15 +138,20 @@ void getPath(List L, Graph G, int u){
         printf("BFS not run!\n");
         exit(EXIT_FAILURE);
     }
-    if(u == getSource(G)){
-        append(L,u);
-       
-    }
+ 
     else if(G->parent[u] == NIL){
-        append(L, NIL);
+
+	if(G->colors[u] == W){
+           append(L, NIL);
+	}
+	else{
+
+        append(L, u);
+	}
     }
     else{
 	getPath(L,G,G->parent[u]);
+	
 	append(L, u);
 	}
 }
@@ -205,23 +225,25 @@ void addArc(Graph G, int u, int v){
 }
 void BFS(Graph G, int s){
   for(int i = 1; i <= getOrder(G); i++){
-       
-    if(i == s){
-   	 G->colors[i] = Gr;
-   	 G->parent[i] = NIL;
-   	 G->distance[i] = 0;
-	}
+   
 	G->colors[i] = W;
         G->parent[i] = NIL;
         G->distance[i] = INF;
-
+	
   }
-    //G->source = s;
+
+    G->colors[s] = Gr;
+    G->parent[s] = NIL;
+    G->distance[s] = 0;
+    
     List L = newList();
     append(L, s);
+    
     moveFront(L);
+    
     while(length(L) > 0){
 	int x = get(L); // store the cursors/source's  value
+	
 	G->source = get(L);
 	deleteFront(L); // the line up and this act similar to dequeue
 	moveFront(G->Array[x]);// set the cursor at front
@@ -231,7 +253,7 @@ void BFS(Graph G, int s){
 			G->colors[u] = Gr;
 			G->distance[u] = G->distance[x] +1;
 			G->parent[u] = x;
-			append(L, x);
+			append(L, u);
 		}
 		moveNext(G->Array[x]);
 	}
