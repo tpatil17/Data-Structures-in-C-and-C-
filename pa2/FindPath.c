@@ -12,6 +12,7 @@ int main(int argc, char* argv[]){
     int n; 
     int u;
     int v;
+    int line = 0;
 
 
      // check command line for correct number of arguments
@@ -35,23 +36,26 @@ int main(int argc, char* argv[]){
 
     // get the number of vertices
 
-    fscanf(in, "%d", n);
+    fscanf(in, "%d", &n);
 
-    fseek(in, 1, SEEK_SET);
+    Graph G =  newGraph(n);
 
-    while(fscanf(in, "%d %d", u , v)){
+//    fseek(in, 1, SEEK_SET);
+
+    while(fscanf(in, "%d %d", &u , &v)){
+	line++;
         if ( u <= 0 || v <= 0){
             break;
         }
-        else{
-            addArc(G, u, v);
-        }
+        
+            addEdge(G, u, v);
+        
     }
 
     printGraph(out, G);
     fprintf(out, "\n");
 
-    while(fscanf(in, "%d %d", u ,v)){
+    while(fscanf(in, "%d %d", &u ,&v)){
         if ( u <= 0 || v <= 0){
             break;
         }
@@ -59,18 +63,20 @@ int main(int argc, char* argv[]){
         BFS(G, u);
 
         getPath(L, G, v);
+	
 
         if(getDist(G,v) == INF){
-            fprintf(out, "The distance from %d to %d is infinty\n", u, v);
+            fprintf(out, "The distance from %d to %d is infinity\n", u, v);
             fprintf(out, "No %d-%d path exists\n", u , v);
         }
         else{
             fprintf(out, "The distance from %d to %d is %d\n", u, v, getDist(G,v));
             fprintf(out, "A shortest %d-%d path is: ", u,v);
-            fprintList(out, L);
-            fprintf(out, "\n");
+            printList(out, L);
+           
         }
         freeList(&L);
+	fprintf(out,"\n");
 
     }
     freeGraph(&G);

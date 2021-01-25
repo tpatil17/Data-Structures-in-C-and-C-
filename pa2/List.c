@@ -381,7 +381,7 @@ void printList(FILE* out, List L){ // Prints to the file pointed to by out, a
 
     if(L != NULL){
         for(N= L->front; N != NULL; N= N->next){
-            fprintf(out,"%d ",N->data);
+            fprintf(out," %d",N->data);
         }
     }
 }
