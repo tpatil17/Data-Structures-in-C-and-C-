@@ -29,7 +29,7 @@ typedef struct GraphObj{
     int *colors ;
     int *parent ;
     int *distance ;
-    int *dis_time ;
+    int *disc_time ;
     int *finish_time;
     int vertices ;
     int size ;
@@ -310,11 +310,12 @@ void Visit(Graph G, int x){
 
 
 void DFS(Graph G, List S){ /* Pre: length(S)==getOrder(G) */
-if(length(s)!= getOrder(G)){
+if(length(S)!= getOrder(G)){
     printf("precondition for DFS failed\n");
     exit(EXIT_FAILURE);
 }
-    for(int i =1; ; i <=n; i++){
+int n = getOrder(G);
+    for(int i =1 ; i <= n; i++){
         G->colors[i] = W;
         G->parent[i] = NIL;
     }
@@ -323,12 +324,12 @@ if(length(s)!= getOrder(G)){
     while(index(S) >=0){
         int x = get(S);
         if(G->colors[x]== W){
-            visit(G,x)
+            visit(G,x);
         }
     moveNext(S);
     }
 
-// After DFS is completed, sort the give List S in assending order based on finish time.
+ // After DFS is completed, sort the give List S in assending order based on finish time.
     List L = newList();
     moveFront(S);
     while(index(S)>=0){
@@ -376,14 +377,14 @@ Graph copyGraph(Graph G){
     for(int i =0; i >= getOrder(G); i++){
         C->Array[i] = copyList(G->Array[i]);
         C->colors[i] = G->colors[i];
-        c->parent[i] = G->parent[i];
-        c->disc_time[i] = G->disc_time[i];
-        c->finish_time[i] = G->finish_time[i];
+        C->parent[i] = G->parent[i];
+        C->disc_time[i] = G->disc_time[i];
+        C->finish_time[i] = G->finish_time[i];
     }
-    c->vertices = G->vertices;
-    c->size = G->size;
-    c->source = G->source;
-return c;    
+    C->vertices = G->vertices;
+    C->size = G->size;
+    C->source = G->source;
+return C;    
 }
 
 void printGraph(FILE* out, Graph G){
