@@ -47,7 +47,7 @@ Graph newGraph(int n){
     G->colors = calloc(n+1, sizeof(int));
     G->parent = calloc(n+1, sizeof(int));
     G->distance = calloc(n+1, sizeof(int));
-    G->dis_time = calloc(n+1, sizeof(int));
+    G->disc_time = calloc(n+1, sizeof(int));
     G->finish_time = calloc(n+1, sizeof(int));
     for(int i = 1; i <= n; i++){
         G->Array[i] = newList();
@@ -324,7 +324,7 @@ int n = getOrder(G);
     while(index(S) >=0){
         int x = get(S);
         if(G->colors[x]== W){
-            visit(G,x);
+            Visit(G,x);
         }
     moveNext(S);
     }
