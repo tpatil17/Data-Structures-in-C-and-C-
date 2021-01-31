@@ -13,9 +13,9 @@
 #define GRAPH_H_
 #include "List.h"
 #include<stdio.h>
-#define NIL -1
-#define INF -2
-#define UNDEF -3
+#define NIL 0
+#define INF -1
+#define UNDEF -2
 #define W 0
 #define Gr 1
 #define B 2

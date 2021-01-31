@@ -392,7 +392,7 @@ List copyList(List L){ // Returns a new List representing the same integer
     List R = newList();
     Node N = NULL;
     if(L != NULL){
-        for (N= L->front; N != NULL; N = N->next){
+        for (N = L->front; N != NULL; N = N->next){
             append(R,N->data);
         }
     }

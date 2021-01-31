@@ -16,8 +16,6 @@
 #include<string.h>
 #include<stdlib.h>
 #include<stdio.h>
-#define NIL -1
-#define INF -2
 #define W 0
 #define Gr 1
 #define B 2
@@ -361,7 +359,7 @@ int n = getOrder(G);
 	}
    for(moveFront(L); index(L) >=0; moveNext(L)){
 	int x = get(L);
-	append(S,x);
+	prepend(S,x);
 	}
 
    freeList(&L);   
