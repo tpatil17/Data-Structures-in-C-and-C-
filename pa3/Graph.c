@@ -126,9 +126,9 @@ int getParent(Graph G, int u){
 	printf("u is invalid at get parent\n");
 	exit(EXIT_FAILURE);
 	}
-   if(getSource(G) == NIL){
-        return NIL;
-    }
+ //  if(getSource(G) == NIL){
+   //     return NIL;
+   // }
    if(G->parent[u] == NIL){
 	return NIL;
 	}
@@ -292,20 +292,23 @@ void BFS(Graph G, int s){
 
 
 void Visit(Graph G, int x){
-    G->disc_time[x] = time++;
+    time++;
+    G->disc_time[x] = time;
     G->colors[x] = Gr;
     moveFront(G->Array[x]);         // Loop trhourg adj list of x
     while(index(G->Array[x])>=0){
-        int y = get(G->Array[x]);
+//	printf("%d\n",y);
+	int y = get(G->Array[x]);
         if(G->colors[y]== W){
             G->parent[y] = x;
-            visit(G,y);
+            Visit(G,y);
         }
     moveNext(G->Array[x]);          // moving next in the adj list of x
     }
     // if loop exited means x is finished
     G->colors[x]=B;
-    G->finish_time[x] = time++;
+    time++;
+    G->finish_time[x] = time;
 }
 
 
@@ -352,9 +355,17 @@ int n = getOrder(G);
         }
         moveNext(S);
     }
-    S = L;
-    freeList(&L);
+ 
+    while(length(S) > 0){
+	deleteFront(S);
+	}
+   for(moveFront(L); index(L) >=0; moveNext(L)){
+	int x = get(L);
+	append(S,x);
+	}
 
+   freeList(&L);   
+    
 }
 
 /*** Other operations ***/
