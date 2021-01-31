@@ -383,7 +383,7 @@ Graph transpose(Graph G){
 
 Graph copyGraph(Graph G){
     Graph C = newGraph(getOrder(G));
-    for(int i =0; i >= getOrder(G); i++){
+    for(int i =1; i <= getOrder(G); i++){
         C->Array[i] = copyList(G->Array[i]);
         C->colors[i] = G->colors[i];
         C->parent[i] = G->parent[i];
