@@ -48,7 +48,7 @@ int main( int argc, char* argv[]){
             addArc(G, u, v);
         
     }
-    fprintf(out, "Adjacency list representation of G:\n")
+    fprintf(out, "Adjacency list representation of G:\n");
     printGraph(out, G);
     fprintf(out, "\n");
 
@@ -65,12 +65,14 @@ int main( int argc, char* argv[]){
 
  // Run DFS on a transpose Graph
 
+ Graph T = transpose(G);
+
  DFS(T, S);
 
  // Count the number of scc's 
  int count =0;
  for(moveFront(S); index(S) >= 0; moveNext(S)){
-    if(getParent(get(S)== NIL)){
+    if(getParent(T,get(S))== NIL){
         count++;
     }
  }
@@ -79,7 +81,7 @@ int main( int argc, char* argv[]){
 
  int ct =1;
  for(moveFront(S); index(S)>=0; moveNext(S)){
-    if(getParent(get(S)) != NIL){
+    if(getParent(T, get(S)) != NIL){
         fprintf(out, "%d ", get(S));
     }
     else{
