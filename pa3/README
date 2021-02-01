@@ -1,0 +1,8 @@
+PA3 Contents:
+1) List.h : header file for LIST ADT
+2) List.c : code for LIST ADT
+3) Graph.h : header file for Graph ADT, with DFS.
+4) Graph.c : code for Graph ADT
+5) GraphTest.c : basic test for Graph ADT functions
+6) FindComponents.c : The client file for pa3
+7) Makefile: builds the program on make
