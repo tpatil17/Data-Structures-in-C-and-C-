@@ -77,20 +77,31 @@ int main( int argc, char* argv[]){
     }
  }
  // print the scc'c in atopological order
- fprintf(out, "G contains %d strongly connected compenents:\n",count);
+ fprintf(out, "G contains %d strongly connected components: ",count);
+
 
  int ct =1;
- for(moveFront(S); index(S)>=0; moveNext(S)){
-    if(getParent(T, get(S)) != NIL){
-        fprintf(out, "%d ", get(S));
-    }
-    else{
-        fprintf(out, "\nCompnent %d:", ct);
-        ct++;
-        fprintf(out, " %d", get(S));
-    }
- }
- 
+ moveBack(S);
+ List L = newList();
+ while(count> 0){
+
+	while(getParent(T,get(S)) != NIL){
+		prepend(L, get(S));
+		movePrev(S);
+	}
+	if(getParent(T,get(S)) == NIL){
+		prepend(L,get(S));
+		movePrev(S);
+		fprintf(out, "\nComponent %d:", ct);
+		printList(out,L);
+		ct++;
+		clear(L);
+	}
+	count--;
+}
+fprintf(out,"\n");
+freeList(&L);	
+		
 
  // Closing all the files and deleting the freeing all the allocated memory
  freeList(&S);
