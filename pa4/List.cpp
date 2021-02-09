@@ -46,10 +46,9 @@ List::List(const List& L){
 
     // load elements of L into this
 
-    L.frontDummy = L.beforeCursor;
-    L.afterCursor = L.frontDummy->next;
-    Node* N = L.afterCursor;
-    while(N!= nullptr){
+   
+    Node* N = L.frontDummy->next;
+    while(N!= L.backDummy){
         this->insertBefore(N->data);
         N = N->next;
     }
@@ -59,7 +58,7 @@ List::List(const List& L){
 
 // Destructor
 List::~List(){
-   moveBack();
+   moveFront();
    while(size() > 0){
        eraseAfter();
    }
@@ -232,18 +231,16 @@ void List::eraseAfter(){
         exit(EXIT_FAILURE);
     }
     
-    // disconnect the node after curosr
-    Node* temp = afterCursor;
+    // disconnect the node after curosr    
 
-    afterCursor = afterCursor->next;
-    beforeCursor->next = afterCursor;
-    afterCursor->prev = beforeCursor;
-
-    temp->next = nullptr;
-    temp->prev = nullptr;
-    
-    // delete the mem sace for temp (AKA old afterCursor).
-    delete temp;
+	
+    beforeCursor->next = afterCursor->next;
+    afterCursor->prev = nullptr;
+    afterCursor->next =nullptr;
+    beforeCursor->next->prev = beforeCursor;
+    delete afterCursor;
+  
+    afterCursor = beforeCursor->next;   
 
     num_elements--;
 }
@@ -283,27 +280,37 @@ void List::eraseBefore(){
 // cursor position. If x is not found, places the cursor at position size(),
 // and returns -1. 
 int List::findNext(int x){
-    Node* N = nullptr;
+     
+    Node* N;
 
     N = afterCursor;
+    if(N == backDummy){
+        return(-1);
+    }
+    beforeCursor = afterCursor;
+    afterCursor = beforeCursor->next;
     pos_cursor++;
 
-    while(N != backDummy){
+    while(pos_cursor < num_elements){
         if(N->data == x){
-            beforeCursor = N;
-            afterCursor = N->next;
             return(pos_cursor);
         }
+
         N = N->next;
+        beforeCursor = N;
+        afterCursor = N->next;
         pos_cursor++;
+    }
+    if(afterCursor == backDummy && beforeCursor->data == x){
+        return(pos_cursor);
     }
 
     // if x not found 
-
+   
     afterCursor = backDummy;
     pos_cursor = size();
     beforeCursor = backDummy->prev;
-
+  
     return(-1);
 
 }
@@ -364,11 +371,12 @@ void List::cleanup(){
             eraseBefore();            
         }
 
-        ctr += 1;        
+               
         N = N->next;
         beforeCursor = N;
         pos_cursor = ctr;
         afterCursor = N->next;
+	ctr++;
     }
 
 
