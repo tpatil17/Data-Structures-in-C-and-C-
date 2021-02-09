@@ -73,20 +73,20 @@ List::~List(){
 // isEmpty()
 // Returns true if List is empty, otherwise returns false.
 int List::isEmpty(){
-   return(size==0);
+   return(size()==0);
 }
 
 // size()
 // Returns the size of this List.
 int List::size(){
-    return(size);
+    return(num_elements);
 }
 
 // position()
 // Returns the position of the cursor in this List. The value returned
 // will be in the range 0 to size().
 int List::position(){
-    return(position);
+    return(pos_cursor);
 }
 
 // Manipulation procedures ----------------------------------------------------
@@ -97,27 +97,27 @@ void List::moveFront(){
     if(size == 0){
         beforCursor = frontDummy;
         afterCursor =  backDummy;
-        position = 0;
+        pos_cursor = 0;
     }
     else{
         beforeCursor = frontDummy;
         afterCursor = frontDummy->next;
-        position = 0;
+        pos_cursor = 0;
     }
 }
 
 // moveBack()
 // Moves cursor to position size() in this List.
 void List::moveBack(){
-    if(size == 0){
+    if(size() == 0){
         beforCursor = frontDummy;
         afterCursor =  backDummy;
-        position = 0;
+        pos_cursor = 0;
     }
     else{
         beforeCursor = backDummy->prev;
         afterCursor = backDummy;
-        position = size;
+        pos_cursor = size();
     }
 }
 
@@ -155,7 +155,7 @@ int List::moveNext(){
     
     afterCursor = afterCursor->next;
     beforeCursor = afterCursor->prev;
-    position++;
+    pos_cursor++;
     return(beforeCursor->data);
 }
 
@@ -170,7 +170,7 @@ int List::movePrev(){
     }
     beforeCursor = beforeCursor->prev;
     afterCursor = beforeCursor->next;
-    position--;
+    pos_cursor--;
     return(afterCursor->data);
 }
 
@@ -189,7 +189,7 @@ void List::insertAfter(int x){
     // cursor is before the new element, aka aftercursor points to the new node
     afterCursor = N;
     
-    size++;
+    num_elements++;
 }
 
 // insertBefore()
@@ -207,8 +207,8 @@ void List::insertBefore(int x){
     // beforcursor points at new node
     beforeCursor = N;
     
-    size++;
-    position++;
+    num_elements++;
+    pos_cursor++;
 }
 
 // eraseAfter()
@@ -233,7 +233,7 @@ void List::eraseAfter(){
     // delete the mem sace for temp (AKA old afterCursor).
     delete temp;
 
-    size--;
+    num_elements--;
 }
 
 // eraseBefore()
@@ -258,9 +258,9 @@ void List::eraseBefore(){
     // delete the node pointed by beforeCursor
     delete temp;
 
-    position--;
+    pos_cursor--;
 
-    size--;
+    num_elements--;
 }
 
 // findNext()
@@ -274,7 +274,7 @@ int List::findNext(int x){
     Node* N = nullptr;
 
     N = afterCursor;
-    position++;
+    pos_cursor++;
 
     while(N != backDummy){
         if(N->data == x){
@@ -283,13 +283,13 @@ int List::findNext(int x){
             return(position);
         }
         N = N->next;
-        position++;
+        pos_cursor++;
     }
 
     // if x not found 
 
     afterCursor = backDummy;
-    position = size();
+    pos_cursor = size();
     beforeCursor = backDummy->prev;
 
     return(-1);
@@ -309,21 +309,21 @@ int List::findPrev(int x){
 
     N = beforeCursor;
 
-    position--;
+    pos_cursor--;
 
     while(N != frontDummy){
         if(N->data == x){
             beforeCursor = N->prev;
             afterCursor = N;
-            return(position);
+            return(pos_cursor);
         }
         N = N->prev;
-        position --;
+        pos_cursor --;
     }
 
     beforeCursor = frontDummy;
     afterCursor = frontDummy->next;
-    position = 0;
+    pos_cursor = 0;
 
     return(-1);
 }
@@ -335,12 +335,12 @@ int List::findPrev(int x){
 // occurances. The cursor is not moved with respect to the retained 
 // elements, i.e. it lies between the same two retained elements that it 
 // did before cleanup() was called.
-void List::cleanup();{
+void List::cleanup(){
     
     // start from the first element
 
     beforeCursor = frontDummy->next;
-    position = 1;
+    pos_cursor = 1;
 
     Node* N = frontDummy->next;
 
@@ -355,7 +355,7 @@ void List::cleanup();{
         ctr += 1;        
         N = N->next;
         beforeCursor = N;
-        position = ctr;
+        pos_cursor = ctr;
         afterCursor = N->next;
     }
 
