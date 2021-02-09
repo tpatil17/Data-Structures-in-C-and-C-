@@ -46,7 +46,8 @@ List::List(const List& L){
 
     // load elements of L into this
 
-    L.moveFront();
+    L.frontDummy = L.beforeCursor;
+    L.afterCursor = L.frontDummy->next;
     Node* N = L.afterCursor;
     while(N!= nullptr){
         this->insertBefore(N->data);
@@ -101,7 +102,6 @@ int List::position(){
 // Moves cursor to position 0 in this List.
 void List::moveFront(){
     if(size() == 0){
-
 
         beforeCursor = frontDummy;
         afterCursor =  backDummy;
