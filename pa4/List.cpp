@@ -16,8 +16,8 @@ List::Node::Node(int x){
 // Class Constructors & Destructors -------------------------------------------
 
 List::List(){
-    frontDummy = new Node();
-    backDummy = new Node();
+    frontDummy = new Node(-1);
+    backDummy = new Node(-1);
     frontDummy->next = backDummy;
     backDummy->prev = frontDummy;
     frontDummy->prev = nullptr;
@@ -33,8 +33,8 @@ List::List(const List& L){
 
     // make this an empty List
 
-    frontDummy = new Node();
-    backDummy = new Node();
+    frontDummy = new Node(-1);
+    backDummy = new Node(-1);
     frontDummy->next = backDummy;
     backDummy->prev = frontDummy;
     frontDummy->prev = nullptr;
@@ -62,6 +62,7 @@ List::~List(){
    while(size() > 0){
        eraseAfter();
    }
+   
     beforeCursor = nullptr;
     afterCursor = nullptr;
     delete frontDummy;
@@ -72,8 +73,13 @@ List::~List(){
 
 // isEmpty()
 // Returns true if List is empty, otherwise returns false.
-int List::isEmpty(){
-   return(size()==0);
+bool List::isEmpty(){
+   if(size() == 0){
+       return true;
+   }
+   else{
+       return false;
+   }
 }
 
 // size()
@@ -94,8 +100,10 @@ int List::position(){
 // moveFront()
 // Moves cursor to position 0 in this List.
 void List::moveFront(){
-    if(size == 0){
-        beforCursor = frontDummy;
+    if(size() == 0){
+
+
+        beforeCursor = frontDummy;
         afterCursor =  backDummy;
         pos_cursor = 0;
     }
@@ -110,7 +118,9 @@ void List::moveFront(){
 // Moves cursor to position size() in this List.
 void List::moveBack(){
     if(size() == 0){
-        beforCursor = frontDummy;
+
+
+        beforeCursor = frontDummy;
         afterCursor =  backDummy;
         pos_cursor = 0;
     }
@@ -204,7 +214,9 @@ void List::insertBefore(int x){
     N->next = afterCursor;
     afterCursor->prev = N;
     
-    // beforcursor points at new node
+    
+    
+    //beforeCursor points at new node
     beforeCursor = N;
     
     num_elements++;
@@ -280,7 +292,7 @@ int List::findNext(int x){
         if(N->data == x){
             beforeCursor = N;
             afterCursor = N->next;
-            return(position);
+            return(pos_cursor);
         }
         N = N->next;
         pos_cursor++;
@@ -418,7 +430,7 @@ bool List::equals(const List& R){
     Node* N;
     Node* M;
 
-    eq = (this->size && R.size);
+    eq = (this->num_elements && R.num_elements);
     N = this->frontDummy->next;
     M = R.frontDummy->next;
 
@@ -435,14 +447,14 @@ bool List::equals(const List& R){
    
 // operator<<()
 // Inserts string representation of L into stream.
-friend std::ostream& operator<<( std::ostream& stream, List& L ){
+std::ostream& operator<<( std::ostream& stream, List& L ){
     return stream << L.List::to_string();
 }
 
 // operator==()
 // Returns true if and only if A is the same integer sequence as B. The 
 // cursors in both Lists are unchanged are unchanged.
-friend bool operator==( List& A, const List& B ){
+bool operator==( List& A, const List& B ){
     return A.List::equals(B);
 }
 
@@ -456,7 +468,7 @@ List& List::operator=( const List& L ){
       // then swap the copy's fields with fields of this
       std::swap(frontDummy->next, temp.frontDummy->next);
       std::swap(backDummy->prev, temp.backDummy->prev);
-      std::swap(size, temp.size);
+      std::swap(num_elements, temp.num_elements);
    }
 
    // return this with the new data installed
