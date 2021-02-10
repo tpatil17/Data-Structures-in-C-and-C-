@@ -228,25 +228,22 @@ void List::insertBefore(int x){
 // pre: position()<size()
 void List::eraseAfter(){
 
-    if(position()>=size()){
-        cerr << "List Error: calling eraseAfter() at the end of a List" << endl;
-        exit(EXIT_FAILURE);
-    }
-    
-    // disconnect the node after curor
+	if(position() < size()){
 
-    Node* temp = afterCursor;
-    afterCursor = temp->next;
-    beforeCursor->next = temp->next;
-    afterCursor->prev = temp->prev;
- 
-    temp->next = nullptr;
-    temp->prev = nullptr;
+	  Node* N = afterCursor;
+	  beforeCursor->next =afterCursor->next;
+	  N->next->prev = beforeCursor;
+	  afterCursor = N->next;
 
-    delete temp;
-   
-    num_elements--;
-    
+	delete N;
+
+ 	num_elements--;
+	}
+	else{
+
+	cerr << "List Error: pre condition failed eraseAfter() "<<endl;
+	exit(EXIT_FAILURE);
+	}    
 }
 
 // eraseBefore()
@@ -542,19 +539,19 @@ List List::concat(const List& L){
 // The cursors in this List and in R are unchanged.
 bool List::equals(const List& R){
     bool eq = false;
-    Node* N;
-    Node* M;
+    Node* N = nullptr;
+    Node* M = nullptr;
 
-    eq = (this->num_elements && R.num_elements);
+    eq = (this->num_elements == R.num_elements);
     N = this->frontDummy->next;
     M = R.frontDummy->next;
 
-    while(eq&& N != backDummy){
+    while(eq && N != this->backDummy){
         eq= (N->data == M->data);
         N = N->next;
         M= M->next;
     }
-    return eq;
+    return(eq);
 
 }
 
