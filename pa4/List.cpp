@@ -45,7 +45,7 @@ List::List(const List& L){
     num_elements = 0;
 
     // load elements of L into this
-
+    
    
     Node* N = L.frontDummy->next;
     while(N!= L.backDummy){
@@ -53,6 +53,7 @@ List::List(const List& L){
         N = N->next;
     }
     
+this->moveFront();
 
 }
 
