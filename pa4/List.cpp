@@ -58,9 +58,9 @@ List::List(const List& L){
 
 // Destructor
 List::~List(){
-   moveFront();
+   moveBack();
    while(size() > 0){
-       eraseAfter();
+       eraseBefore();
    }
    
     beforeCursor = nullptr;
@@ -226,23 +226,26 @@ void List::insertBefore(int x){
 // Deletes element after cursor.
 // pre: position()<size()
 void List::eraseAfter(){
+
     if(position()>=size()){
         cerr << "List Error: calling eraseAfter() at the end of a List" << endl;
         exit(EXIT_FAILURE);
     }
     
-    // disconnect the node after curosr    
+    // disconnect the node after curor
 
-	
-    beforeCursor->next = afterCursor->next;
-    afterCursor->prev = nullptr;
-    afterCursor->next =nullptr;
-    beforeCursor->next->prev = beforeCursor;
-    delete afterCursor;
-  
-    afterCursor = beforeCursor->next;   
+    Node* temp = afterCursor;
+    afterCursor = temp->next;
+    beforeCursor->next = temp->next;
+    afterCursor->prev = temp->prev;
+ 
+    temp->next = nullptr;
+    temp->prev = nullptr;
 
+    delete temp;
+   
     num_elements--;
+    
 }
 
 // eraseBefore()
@@ -270,6 +273,8 @@ void List::eraseBefore(){
     pos_cursor--;
 
     num_elements--;
+
+    
 }
 
 // findNext()
@@ -283,10 +288,13 @@ int List::findNext(int x){
      
     Node* N;
 
+    if(position() == size()){
+	return(-1);
+	}
+
     N = afterCursor;
-    if(N == backDummy){
-        return(-1);
-    }
+    
+
     beforeCursor = afterCursor;
     afterCursor = beforeCursor->next;
     pos_cursor++;
@@ -325,6 +333,10 @@ int List::findNext(int x){
 int List::findPrev(int x){
 
     Node* N = nullptr;
+    
+    if(position() == 0){
+	return(-1);
+	}
 
     N = beforeCursor;
 
@@ -356,29 +368,118 @@ int List::findPrev(int x){
 // did before cleanup() was called.
 void List::cleanup(){
     
-    // start from the first element
+    Node* local_cursor;
+    Node* refrance;
 
-    beforeCursor = frontDummy->next;
-    pos_cursor = 1;
+    local_cursor = frontDummy->next;
 
-    Node* N = frontDummy->next;
-
-    afterCursor = N->next;
+    refrance = frontDummy->next;
     
+
+    local_cursor = refrance->next;
+    
+    int local_pos = 1;
+
     int ctr = 1;
-    while(N != backDummy){
-        while(findNext(N->data) != -1){
-            eraseBefore();            
+    while(refrance != backDummy){
+        while(local_cursor != backDummy){
+
+            if(local_cursor->data == refrance->data){
+                
+
+                if(local_cursor == afterCursor){
+                    afterCursor = afterCursor->next;
+                    beforeCursor->next = afterCursor;
+                    afterCursor->prev = beforeCursor;
+                    
+                    Node* del = local_cursor;
+                    local_cursor = local_cursor->next;
+                    
+
+                    del->next = nullptr;
+                    del->prev = nullptr;
+
+                    delete del;
+
+                    num_elements --;
+
+                    continue;
+                }
+                else if( local_cursor == beforeCursor){
+
+                    beforeCursor = beforeCursor->prev;
+                    afterCursor->prev = beforeCursor;
+                    beforeCursor->next = afterCursor;
+
+                    Node* del = local_cursor;
+                    local_cursor = local_cursor->next;
+                    
+
+                    del->next = nullptr;
+                    del->prev = nullptr;
+
+                    delete del;
+
+                    num_elements--;
+                    pos_cursor--;
+
+                    continue;
+                }
+
+                else{
+
+                    if(local_pos >= pos_cursor){
+
+                        Node* del = local_cursor;
+
+                        local_cursor->prev->next = local_cursor->next;
+                        local_cursor->next->prev = local_cursor->prev;
+                        local_cursor = local_cursor->next;
+
+                        del->next = nullptr;
+                        del->prev = nullptr;
+
+                        delete del;
+                        num_elements--;
+
+                        continue;
+                    }
+                    else{
+                        Node* del = local_cursor;
+
+                        local_cursor->prev->next = local_cursor->next;
+                        local_cursor->next->prev = local_cursor->prev;
+                        local_cursor = local_cursor->next;
+
+                        del->next = nullptr;
+                        del->prev = nullptr;
+
+                        delete del;
+
+                        num_elements--;
+                        pos_cursor--;
+
+                        continue;
+                    }
+
+                }
+            }
+
+            local_cursor = local_cursor->next;
+            local_pos ++;
+
         }
 
-               
-        N = N->next;
-        beforeCursor = N;
-        pos_cursor = ctr;
-        afterCursor = N->next;
-	ctr++;
+                
+        refrance = refrance->next;
+        if(refrance == backDummy){
+            break;
+        }
+        local_cursor = refrance->next;
+        local_pos = ctr +1;
+        ctr++;
     }
-
+    
 
 }
 
@@ -403,7 +504,8 @@ List List::concat(const List& L){
     Node* N = this->frontDummy->next;
     Node* M = L.frontDummy->next;
 
-    while(N != this->backDummy){
+   
+	while(N != this->backDummy){
         ret_list.insertBefore(N->data);
         N = N->next;
     }
@@ -412,6 +514,10 @@ List List::concat(const List& L){
         ret_list.insertBefore(M->data);
         M = M->next;
     }
+    
+    ret_list.beforeCursor = ret_list.frontDummy;
+    ret_list.afterCursor = ret_list.frontDummy->next;
+    ret_list.pos_cursor = 0;
 
     return(ret_list);
 }
@@ -474,9 +580,14 @@ List& List::operator=( const List& L ){
       List temp = L;
 
       // then swap the copy's fields with fields of this
-      std::swap(frontDummy->next, temp.frontDummy->next);
-      std::swap(backDummy->prev, temp.backDummy->prev);
+
+      std::swap(frontDummy, temp.frontDummy);
+      std::swap(backDummy, temp.backDummy);
       std::swap(num_elements, temp.num_elements);
+      std::swap(beforeCursor, temp.beforeCursor);
+      std::swap(afterCursor, temp.afterCursor);
+      std::swap(pos_cursor, temp.pos_cursor);
+
    }
 
    // return this with the new data installed
