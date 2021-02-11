@@ -1,0 +1,19 @@
+/*********************************************************************************
+ *** Tanishq Patil, tmpatil
+ *** 2021 Winter CSE 101 pa4
+ *** 
+ *** README file describing each file in pa4
+ *** 
+ ***********************************************************************************/
+
+
+List.h : The header file provided by TA
+
+List.cpp: The code for List ADT in C++ language.
+
+Shuffle.cpp: The Client file for pa4
+
+ListTest.cpp: file used to run tests on List functions and fix bugs
+
+Makefile: Builder, it builds the program on typing make.
+

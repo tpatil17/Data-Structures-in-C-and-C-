@@ -1,3 +1,13 @@
+/*********************************************************************************
+ **** Tanishq Patil, tmpatil
+ **** 2021 Winter CSE 101 pa4
+ **** List.cpp
+ **** implementation for List ADT
+ ************************************************************************************/
+
+
+
+
 #include<iostream>
 #include<string>
 #include "List.h"
