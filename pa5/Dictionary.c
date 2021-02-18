@@ -53,7 +53,8 @@ Dictionary newDictionary(int unique){
 // Frees heap memory associated with *pD, sets *pD to NULL.
 void freeDictionary(Dictionary* pD){
     makeEmpty(*pD);
-    free(*pD->NIL);
+    Dictionary D = *pD;
+    free(D->NIL);
     free(*pD);
     pD = NULL;
 }
