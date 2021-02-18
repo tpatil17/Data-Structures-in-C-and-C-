@@ -40,18 +40,19 @@ Dictionary newDictionary(int unique){
     D->unique = unique;
     Node NIL = malloc(sizeof(NodeObj));
     NIL->parent = NULL;
-    NIL->key = -1;
+    NIL->key = "u";
     NIL->val = -1;
     NIL->right = NULL;
     NIL->left = NULL;
     D->NIL= NIL;
     D->current = NULL;
+    return D;
 }
 
 // freeDictionary()
 // Frees heap memory associated with *pD, sets *pD to NULL.
 void freeDictionary(Dictionary* pD){
-    makeNull(*pD);
+    makeEmpty(*pD);
     free(*pD->NIL);
     free(*pD);
     pD = NULL;
@@ -121,7 +122,7 @@ Node TreeMaximum(Dictionary D, Node x){
 }
 
 Node TreeSuccesor(Dictionary D, Node x){
-if(x != D->NIL){
+
     if(x->right != D->NIL){
         TreeMinimum(D ,x->right);
     }
@@ -131,10 +132,10 @@ if(x != D->NIL){
         y = y->parent;
     }
     return y;
-}
+
 }
 Node TreePredecessor(Dictionary D, Node x){
-    if(x != D->NIL){
+    
         if(x->left != D->NIL){
             TreeMaximum(D, x->left);
         }
@@ -144,7 +145,7 @@ Node TreePredecessor(Dictionary D, Node x){
             y = y->parent;
         }
         return y;
-    }
+    
 }
 
 // manupulation helper function BST-----------------
@@ -215,6 +216,7 @@ VAL_TYPE lookup(Dictionary D, KEY_TYPE k){
                 }
             }
         }
+        return VAL_UNDEF;
     }
 }
 
@@ -257,7 +259,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
                         D->size++;
                         break;
                     }
-                    temp = temp->left
+                    temp = temp->left;
                 }
             }
 
@@ -280,7 +282,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
         if(D->size == 0){
         D->Root = N;
         D->size++;
-        
+        }
         
             Node temp = D->Root;
             int i = 1;
@@ -302,7 +304,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
                         D->size ++;
                         break;
                     }
-                    temp = temp->left
+                    temp = temp->left;
                 
                 }
             }
@@ -440,7 +442,7 @@ VAL_TYPE next(Dictionary D){
         return VAL_UNDEF;
     }
     Node max = TreeMaximum(D, D->Root);
-    Node min = TreeMinimum(D, D->Root);
+    
     if(D->current == max){
         D->current = NULL;
         return VAL_UNDEF;
@@ -461,7 +463,7 @@ VAL_TYPE prev(Dictionary D){
     if(D->current == NULL){
         return VAL_UNDEF;
     }
-    Node max = TreeMaximum(D, D->Root);
+    
     Node min = TreeMinimum(D, D->Root);
     if(D->current == min){
         D->current = NULL;
