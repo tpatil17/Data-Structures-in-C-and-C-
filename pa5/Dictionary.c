@@ -1,6 +1,7 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
+#include<stdbool.h>
 #include "Dictionary.h"
 
 
@@ -20,7 +21,7 @@ typedef struct NodeObj* Node;
 
 typedef struct DictionaryObj{
     int unique;
-    int size = 0;
+    int size ;
     Node Root;
     Node NIL;
     Node current;
@@ -59,39 +60,39 @@ void freeDictionary(Dictionary* pD){
 
 void InOrderTreeWalk(Dictionary D, Node x, FILE* out){
 
-    if(x != NIL){
+    if(x != D->NIL){
         if(x->left != D->NIL){
-            InOrderTreeWalk(x->left);
+            InOrderTreeWalk(D, x->left, out);
         }
         fprintf(out, "%s %d\n", x->key, x->val);
         if(x->right != D->NIL){
-            InOrderTreeWalk(x->right);
+            InOrderTreeWalk(D, x->right, out);
         }
     }
 
 }
 
-void PreOrderTreeWalk(Dictionary D, Node x){
+void PreOrderTreeWalk(Dictionary D, Node x, FILE* out){
 
     if(x != D->NIL){
-        fprintf(out,"%s %d\n", x->key, k->val);
+        fprintf(out,"%s %d\n", x->key, x->val);
         if(x->left != D->NIL){
-            PreOrderTreeWalk(x->left);
+            PreOrderTreeWalk(D,x->left, out);
         }
         if(x->right != D->NIL){
-            PreOrderTreeWalk(x->right);
+            PreOrderTreeWalk(D, x->right, out);
         }
     }
 }
 
-void PostOrderTreeWalk(Dictionary D, Node x){
+void PostOrderTreeWalk(Dictionary D, Node x, FILE* out){
 
     if(x != D->NIL){
         if(x->left != D->NIL){
-            PostOrderTreeWalk(x->left);
+            PostOrderTreeWalk(D, x->left, out);
         }
         if(x->right != D->NIL){
-            PostOrderTreeWalk(x->right);
+            PostOrderTreeWalk(D, x->right, out);
         }
         fprintf(out ,"%s %d\n", x->key, x->val);
     }
@@ -120,9 +121,9 @@ Node TreeMaximum(Dictionary D, Node x){
 }
 
 Node TreeSuccesor(Dictionary D, Node x){
-if(x != NIL){
+if(x != D->NIL){
     if(x->right != D->NIL){
-        TreeMinimum(x->right);
+        TreeMinimum(D ,x->right);
     }
     Node y = x->parent;
     while( y != D->NIL && x == y->right){
@@ -133,9 +134,9 @@ if(x != NIL){
 }
 }
 Node TreePredecessor(Dictionary D, Node x){
-    if(x != NIL){
+    if(x != D->NIL){
         if(x->left != D->NIL){
-            TreeMaximum(x->left);
+            TreeMaximum(D, x->left);
         }
         Node y = x->parent;
         while(y != D-> NIL && x == y->left){
@@ -230,7 +231,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
             N->key = k;
             N->val = v;
             N->parent = D->NIL;
-            N->right = D->NIL:
+            N->right = D->NIL;
             N->left = D->NIL;
         if(D->size == 0){
             D->Root = N;
@@ -262,55 +263,60 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
 
         }
 
-        
-    }
+    }   
+    
     else{
-        if(lookup(D, k) == VAL_UNDEF){
-             Node N = malloc(sizeof(NodeObj));
-            N->key = k;
-            N->val = v;
-            N->parent = D->NIL;
-            N->right = D->NIL:
-            N->left = D->NIL;
-            if(D->size == 0){
-                D->Root = N;
-                D->size++;
-            }
-            else{
-                Node temp = D->Root;
-                int i = 1;
-                while(i == 1){
-                    if(KEY_CMP(k, temp->key) > 0){
-                        if(temp->right == D->NIL){
-                            N->parent = temp;
-                            temp->right = N;
-                            D->size++;
-                            break;
-                        }
-                        temp = temp->right;
+        if(lookup(D, k) != VAL_UNDEF){
+            
+            printf("Pre condition for uniqe insert failed\n");
+            exit(EXIT_FAILURE);
+        }
+        Node N = malloc(sizeof(NodeObj));
+        N->key = k;
+        N->val = v;
+        N->parent = D->NIL;
+        N->right = D->NIL;
+        N->left = D->NIL;
+        if(D->size == 0){
+        D->Root = N;
+        D->size++;
+        
+        
+            Node temp = D->Root;
+            int i = 1;
+            while(i == 1){
+                if(KEY_CMP(k, temp->key) > 0){
+                    if(temp->right == D->NIL){
+                        N->parent = temp;
+                        temp->right = N;
+                        D->size++;
+                        break;
                     }
-                    else if(KEY_CMP(k, temp->key) < 0){
-                        if(temp->left == D->NIL){
-                            N->parent = temp;
-                            temp->left = N;
-                            D->size ++;
-                            break;
-                        }
-                        temp = temp->left
+                    temp = temp->right;
+                }
+                else{
+                    
+                    if(temp->left == D->NIL){
+                        N->parent = temp;
+                        temp->left = N;
+                        D->size ++;
+                        break;
                     }
+                    temp = temp->left
+                
                 }
             }
 
-        }
-    
+        
     }
+    
 }
 
 // delete()
 // Remove the pair whose key is k from Dictionary D.
 // Pre: lookup(D,k)!=VAL_UNDEF (i.e. D contains a pair whose key is k.)
 void delete(Dictionary D, KEY_TYPE k){
-    if(lookup(D,K) == VAL_UENDEF){
+    if(lookup(D,k) == VAL_UNDEF){
         printf(" precondition for delete failed\n");
         exit(EXIT_FAILURE);
     }
