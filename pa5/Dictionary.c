@@ -36,9 +36,9 @@ typedef struct DictionaryObj{
 // accepted. In this case, the operation insert(D, k) will enforce the 
 // precondition: lookup(D, k)==VAL_UNDEF
 Dictionary newDictionary(int unique){
-    Dictionary D = malloc(sizeof(DictionaryObj));
+    Dictionary D = calloc(1,sizeof(DictionaryObj));
     D->unique = unique;
-    Node NIL = malloc(sizeof(NodeObj));
+    Node NIL = calloc(1,sizeof(NodeObj));
     NIL->parent = NULL;
     NIL->key = "u";
     NIL->val = -1;
@@ -125,7 +125,7 @@ Node TreeMaximum(Dictionary D, Node x){
 Node TreeSuccesor(Dictionary D, Node x){
 
     if(x->right != D->NIL){
-        TreeMinimum(D ,x->right);
+        return TreeMinimum(D ,x->right);
     }
     Node y = x->parent;
     while( y != D->NIL && x == y->right){
@@ -138,7 +138,7 @@ Node TreeSuccesor(Dictionary D, Node x){
 Node TreePredecessor(Dictionary D, Node x){
     
         if(x->left != D->NIL){
-            TreeMaximum(D, x->left);
+           return TreeMaximum(D, x->left);
         }
         Node y = x->parent;
         while(y != D-> NIL && x == y->left){
@@ -190,11 +190,16 @@ int getUnique(Dictionary D){
 // KEY_CMP(key, k)==0), then returns value. If D contains no such pair, then
 // returns VAL_UNDEF.
 VAL_TYPE lookup(Dictionary D, KEY_TYPE k){
-    Node temp = D->Root;
+    
     if(D->size <= 0 ){
         return VAL_UNDEF;
     }
     else{
+
+ Node temp = NULL;
+ 
+temp = D->Root;
+
         int i = 1;
         while(i == 1){
             if(KEY_CMP(temp->key, k) == 0){
@@ -230,7 +235,7 @@ VAL_TYPE lookup(Dictionary D, KEY_TYPE k){
 // is enforced. 
 void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
     if(getUnique(D) == 0){
-        Node N = malloc(sizeof(NodeObj));
+        Node N = calloc(1,sizeof(NodeObj));
             N->key = k;
             N->val = v;
             N->parent = D->NIL;
@@ -241,7 +246,8 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
             D->size++;
         }
         else{
-            Node temp = D->Root;
+            Node temp = NULL;
+       		temp = D->Root;
             int i = 1;
             while(i ==1){
                 if(KEY_CMP( k, temp->key) > 0){
@@ -249,6 +255,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
                         N->parent = temp;
                         temp->right = N;
                         D->size++;
+			
                         break;
                     }
                     temp = temp->right;
@@ -258,6 +265,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
                         N->parent = temp;
                         temp->left = N;
                         D->size++;
+		
                         break;
                     }
                     temp = temp->left;
@@ -274,45 +282,45 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
             printf("Pre condition for uniqe insert failed\n");
             exit(EXIT_FAILURE);
         }
-        Node N = malloc(sizeof(NodeObj));
-        N->key = k;
-        N->val = v;
-        N->parent = D->NIL;
-        N->right = D->NIL;
-        N->left = D->NIL;
+	    Node N = calloc(1,sizeof(NodeObj));
+            N->key = k;
+            N->val = v;
+            N->parent = D->NIL;
+            N->right = D->NIL;
+            N->left = D->NIL;
         if(D->size == 0){
-        D->Root = N;
-        D->size++;
+            D->Root = N;
+            D->size++;
         }
-        
-            Node temp = D->Root;
+        else{
+            Node temp = NULL;
+                temp = D->Root;
             int i = 1;
-            while(i == 1){
-                if(KEY_CMP(k, temp->key) > 0){
+            while(i ==1){
+                if(KEY_CMP( k, temp->key) > 0){
                     if(temp->right == D->NIL){
                         N->parent = temp;
                         temp->right = N;
                         D->size++;
+                 //       printf("a\n");
                         break;
                     }
                     temp = temp->right;
                 }
-                else{
-                    
+                else if(KEY_CMP(k, temp->key) < 0){
                     if(temp->left == D->NIL){
                         N->parent = temp;
                         temp->left = N;
-                        D->size ++;
+                        D->size++;
+                       // printf("b\n");
                         break;
                     }
                     temp = temp->left;
-                
                 }
             }
-
-        
-    }
-    
+	
+	}
+   }        
 }
 
 // delete()
@@ -320,7 +328,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
 // Pre: lookup(D,k)!=VAL_UNDEF (i.e. D contains a pair whose key is k.)
 void delete(Dictionary D, KEY_TYPE k){
     if(lookup(D,k) == VAL_UNDEF){
-        printf(" precondition for delete failed\n");
+       printf(" precondition for delete failed\n");
         exit(EXIT_FAILURE);
     }
     if(D->Root == NULL){
@@ -329,6 +337,7 @@ void delete(Dictionary D, KEY_TYPE k){
     }
 
     Node temp = D->Root;
+
 
     int i = 1;
     while(i == 1){
@@ -344,6 +353,9 @@ void delete(Dictionary D, KEY_TYPE k){
 
     }
     Node z = temp;  
+    if(D->current == z){
+	D->current = NULL;
+    }
 
     if(z->left == D->NIL){
         Node del = z;
@@ -380,10 +392,13 @@ void delete(Dictionary D, KEY_TYPE k){
 // makeEmpty()
 // Reset Dictionary D to the empty state, containing no pairs.
 void makeEmpty(Dictionary D){
+
+    D->current = NULL;
     while(D->size > 0){
         Node N = TreeMinimum(D, D->Root);
         delete(D, N->key);
     }
+
 }
 
 // beginForward()
@@ -420,7 +435,10 @@ VAL_TYPE beginReverse(Dictionary D){
 // If an iteration (forward or reverse) over D has started, returns the 
 // the current key. If no iteration is underway, returns KEY_UNDEF.
 KEY_TYPE currentKey(Dictionary D){
-    return D->current->key;
+   if(D->current != NULL){    
+        return D->current->key;
+   }
+   return KEY_UNDEF; 
 }
 
 // currentVal()
@@ -428,9 +446,12 @@ KEY_TYPE currentKey(Dictionary D){
 // value corresponding to the current key. If no iteration is underway, 
 // returns VAL_UNDEF.
 VAL_TYPE currentVal(Dictionary D){
-    return D->current->val;
+ 
+    if(D->current != NULL){
+       return D->current->val;
+   }
+   return VAL_UNDEF;
 }
-
 // next()
 // If an iteration (forward or reverse) over D has started, and has not
 // reached the last pair, moves to the next key in D (as defined by the 
