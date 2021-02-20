@@ -1,0 +1,13 @@
+README for pa5;
+
+
+Lex.c: The client file for pa5
+
+Dictionary.c: The ADT file for pa5
+
+Dictionary.h : The header file for ADT
+
+DictionaryTest.c : Test file for Dictionary ADT
+
+Makefile : The program builder
+

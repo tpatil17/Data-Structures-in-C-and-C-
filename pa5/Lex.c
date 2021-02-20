@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
     char **string_array;
 	string_array = malloc(line_count* sizeof(char*));
 	for(int i =0 ;i < line_count; i++){
-		string_array[i] = malloc(strlen(string_array[i]));
+		string_array[i] = malloc(4096);
 		
 	}
 
