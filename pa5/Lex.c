@@ -46,9 +46,9 @@ int main(int argc, char *argv[]){
    }
     // An array of strings
     char **string_array;
-	string_array = calloc(1,line_count* sizeof(char*));
+	string_array = malloc(line_count* sizeof(char*));
 	for(int i =0 ;i < line_count; i++){
-		string_array[i] = calloc(1,4096);
+		string_array[i] = malloc(strlen(string_array[i]));
 		
 	}
 
