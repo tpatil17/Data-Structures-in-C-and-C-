@@ -189,10 +189,8 @@ int size(Dictionary D){
 // Returns true (1) if D requires that all pairs have unique keys. Returns
 // false (0) if D accepts distinct pairs with identical keys.
 int getUnique(Dictionary D){
-    if(D->unique != 0){
-        return true;
-    }
-    return false;
+   
+    return D->unique;
 }
 
 // lookup()
@@ -245,6 +243,9 @@ temp = D->Root;
 // is enforced. 
 void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
     if(getUnique(D) == 0){
+
+//     printf(" inside get unique == 0 for insertion\n");
+
         Node N = calloc(1,sizeof(NodeObj));
             N->key = k;
             N->val = v;
@@ -260,7 +261,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
        		temp = D->Root;
             int i = 1;
             while(i ==1){
-                if(KEY_CMP( k, temp->key) > 0){
+                if(KEY_CMP( k, temp->key) >= 0){
                     if(temp->right == D->NIL){
                         N->parent = temp;
                         temp->right = N;
@@ -270,7 +271,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
                     }
                     temp = temp->right;
                 }
-                else if(KEY_CMP(k, temp->key) < 0){
+                else if(KEY_CMP(k, temp->key) <= 0){
                     if(temp->left == D->NIL){
                         N->parent = temp;
                         temp->left = N;
@@ -307,7 +308,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
                 temp = D->Root;
             int i = 1;
             while(i ==1){
-                if(KEY_CMP( k, temp->key) > 0){
+                if(KEY_CMP( k, temp->key) >= 0){
                     if(temp->right == D->NIL){
                         N->parent = temp;
                         temp->right = N;
@@ -317,7 +318,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
                     }
                     temp = temp->right;
                 }
-                else if(KEY_CMP(k, temp->key) < 0){
+                else if(KEY_CMP(k, temp->key) <= 0){
                     if(temp->left == D->NIL){
                         N->parent = temp;
                         temp->left = N;
