@@ -1,3 +1,10 @@
+/*********************************************************************************
+ * *** Tanishq Patil, tmpatil
+ * *** 2021 Winter CSE 101 pa6
+ * *** Dictionary.c
+ * *** code for Dictionary ADT
+ * ***********************************************************************************/
+
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
