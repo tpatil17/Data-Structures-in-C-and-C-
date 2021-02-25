@@ -467,9 +467,11 @@ void RB_Delete(Dictionary D, Node z){
           del->right = del->left = NULL;
           free(del);
           D->size--;
-      
+      if(y_original_color == BLACK){
+         RB_DeleteFixUp(D, x);
+      } 
 
-    }
+   }
    else if(z->right == D->NIL){
       Node x = z->left;
       Node del = z;
@@ -479,7 +481,9 @@ void RB_Delete(Dictionary D, Node z){
           del->right = del->left = NULL;
           free(del);
           D->size--;
-       
+      if(y_original_color == BLACK){
+         RB_DeleteFixUp(D, x);
+      }
    }
    else{
       y = TreeMinimum(D, z->right);
@@ -505,11 +509,12 @@ void RB_Delete(Dictionary D, Node z){
           del->right = del->left = NULL;
           free(del);
           D->size--;
-        
+      
+      if(y_original_color == BLACK){
+         RB_DeleteFixUp(D, x);
+      }
    }
-   if(y_original_color == BLACK){
-      RB_DeleteFixUp(D, x);
-   }
+   
 }
 
 // delete()
