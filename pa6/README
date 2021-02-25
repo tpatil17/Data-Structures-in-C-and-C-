@@ -2,5 +2,5 @@ PA6 Contents:
 1) Dictionary.h : header file for Dictionary ADT
 2) Dictionary.c : code for Dictionary ADT
 3) DictionayrTest.c : basic test for Graph ADT functions
-4) Order.c : The client file for pa3
-5) Makefile: builds the program on make
+4) Order.c : The client file for pa6.
+5) Makefile: builds the program on make.
