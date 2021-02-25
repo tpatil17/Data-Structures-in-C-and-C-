@@ -50,6 +50,7 @@ Dictionary newDictionary(int unique){
     NIL->color = BLACK;
     D->NIL= NIL;
     D->current = NULL;
+    D->Root = D->NIL;
     return D;
 }
 
@@ -324,7 +325,9 @@ void RB_InsertFixUp(Dictionary D,Node z){
 void RB_Insert(Dictionary D, Node z){
    Node y = D->NIL;
    Node x = D->Root;
+     
    while( x != D->NIL){
+      
       y = x;
       if (KEY_CMP(z->key, x->key) < 0){
          x = x->left;
@@ -333,6 +336,7 @@ void RB_Insert(Dictionary D, Node z){
          x = x->right;
         }
     }
+  
    z->parent = y;
    if( y == D->NIL){
       D->Root = z;
@@ -347,6 +351,7 @@ void RB_Insert(Dictionary D, Node z){
    z->right = D->NIL;
    z->color = RED;
    RB_InsertFixUp(D, z);
+   D->size++;
 }
 
 
@@ -372,8 +377,10 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
     x->right = D->NIL;
     x->key = k;
     x->val = v;
-
+	 
+   // printf("%s\n", x->key);
     RB_Insert(D, x);
+    
 }
 
 //--------------- Transplant -------------------------------------------------
@@ -383,20 +390,26 @@ void RB_Transplant(Dictionary D, Node u, Node v){
       D->Root = v;
     }
    else if(u == u->parent->left){
+  //    printf("clause check\n");
       u->parent->left = v;
+//	printf(" after work\n");
     }
    else{
+//	printf("uncharted teritory\n");
       u->parent->right = v;
     }
    if(v != D->NIL){
+   //printf("still in bad area\n");
    v->parent = u->parent;
    }
+//printf("Transplant complete\n");
 }
 
 
 //------------ RB fixup for delete ---------------------------------------
 
 void RB_DeleteFixUp(Dictionary D, Node x){
+if(x != D->NIL){
    while(x != D->Root && x->color == BLACK){
       if(x == x->parent->left){
          Node w = x->parent->right;
@@ -453,15 +466,18 @@ void RB_DeleteFixUp(Dictionary D, Node x){
    }
    x->color = BLACK;
 }
+}
 // ----------------- RB Delete -------------------------------------------------
 
 void RB_Delete(Dictionary D, Node z){
    Node y = z;
    int y_original_color = y->color;
    if(z->left == D->NIL){
+//      printf(" nil test passed\n");
       Node x = z->right;
       Node del = z;
       RB_Transplant(D, z, x);
+//      printf(" pblm after transplant\n");
       if(y_original_color == BLACK){
          RB_DeleteFixUp(D, x);
       }
@@ -549,7 +565,7 @@ void delete(Dictionary D, KEY_TYPE k){
     if(D->current == z){
         D->current = NULL;
     }
-
+    //printf("%s\n", z->key);
     RB_Delete(D, z);
 }
 
@@ -560,6 +576,7 @@ void makeEmpty(Dictionary D){
     D->current = NULL;
     while(D->size > 0){
         Node N = TreeMinimum(D, D->Root);
+	//printf("min working\n");
         delete(D, N->key);
     }
 
