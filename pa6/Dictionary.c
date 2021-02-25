@@ -44,7 +44,7 @@ Dictionary newDictionary(int unique){
     Node NIL = calloc(1,sizeof(NodeObj));
     NIL->parent = NULL;
     NIL->key = "u";
-    NIL->val = -1;
+    NIL->val = NULL;
     NIL->right = NULL;
     NIL->left = NULL;
     NIL->color = BLACK;
@@ -238,12 +238,13 @@ void LeftRotate(Dictionary D, Node x){
    y->left = x; 
    x->parent = y;
    }
+   
 }
 
 //----------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------
 
-void RotateRight(Dictionary D, Node x){
+void RightRotate(Dictionary D, Node x){
    if(x != D->NIL){
     // set y
    Node y = x->left; 
@@ -257,7 +258,7 @@ void RotateRight(Dictionary D, Node x){
    // link y's parent to x
    y->parent = x->parent; 
    if (x->parent == D->NIL){
-      D->root = y;
+      D->Root = y;
     }
    else if(x == x->parent->right){
       x->parent->right = y;
@@ -272,35 +273,6 @@ void RotateRight(Dictionary D, Node x){
    }
 }
 
-//--------------------- RB - Tree insert block ----------------------------
-
-RB_Insert(Dictionary D, Node z){
-   Node y = D->NIL;
-   Node x = D->Root;
-   while( x != D->NIL){
-      y = x;
-      if (KEY_CMP(z->key, x->key) < 0){
-         x = x->left;
-        }
-      else{ 
-         x = x->right;
-        }
-    }
-   z->parent = y;
-   if( y == D->NIL){
-      D->Root = z;
-    }
-   else if( KEY_CMP(z->key , y->key) < 0){
-      y->left = z;
-    }
-   else{
-      y->right = z;
-    }
-   z->left = D->NIL;
-   z->right = D->NIL;
-   z->color = RED;
-   RB_InsertFixUp(D, z);
-}
 
 //----------------- RB_InsertFixUp()-------------------------------------
 
@@ -337,16 +309,46 @@ RB_InsertFixUp(Dictionary D,Node z){
          else{ 
             if(z == z->parent->left){
                z = z->parent;                     // case 5
-               RightRotate(T, z);                // case 5
+               RightRotate(D, z);                // case 5
             }
             z->parent->color = BLACK;              // case 6
             z->parent->parent->color = RED;         // case 6
-            LeftRotate(D, z.parent.parent);     // case 6
+            LeftRotate(D, z->parent->parent);     // case 6
          }
       }
    }
    D->Root->color = BLACK;
 }
+//--------------------- RB - Tree insert block ----------------------------
+
+RB_Insert(Dictionary D, Node z){
+   Node y = D->NIL;
+   Node x = D->Root;
+   while( x != D->NIL){
+      y = x;
+      if (KEY_CMP(z->key, x->key) < 0){
+         x = x->left;
+        }
+      else{ 
+         x = x->right;
+        }
+    }
+   z->parent = y;
+   if( y == D->NIL){
+      D->Root = z;
+    }
+   else if( KEY_CMP(z->key , y->key) < 0){
+      y->left = z;
+    }
+   else{
+      y->right = z;
+    }
+   z->left = D->NIL;
+   z->right = D->NIL;
+   z->color = RED;
+   RB_InsertFixUp(D, z);
+}
+
 
 // insert()
 // Insert the pair (k,v) into Dictionary D. 
@@ -376,7 +378,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
 
 //--------------- Transplant -------------------------------------------------
 
-RB_Transplant(T, u, v){
+RB_Transplant(Dictionary D, Node u, Node v){
    if(u->parent == D->NIL){
       D->Root = v;
     }
@@ -391,64 +393,6 @@ RB_Transplant(T, u, v){
    }
 }
 
-// ----------------- RB Delete -------------------------------------------------
-
-RB_Delete(Dictionary D, Node z){
-   Node y = z;
-   int y_original_color = y->color;
-   if(z->left == D->NIL){
-      Node x = z->right;
-      Node del = z;
-      RB_Transplant(D, z, z->right);
-      
-          del->parent = NULL;
-          del->right = del->left = NULL;
-          free(del);
-          D->size--;
-      
-
-    }
-   else if(z->right == D->NIL){
-      Node x = z->left;
-      Node del = z;
-      RB_Transplant(D, z, z->left);
-      
-          del->parent = NULL;
-          del->right = del->left = NULL;
-          free(del);
-          D->size--;
-       
-    }
-   else{
-      y = TreeMinimum(z->right)
-      y_original_color = y->color;
-      Node x = y->right;
-      if(y->parent == z){
-         if(x != D->NIL){
-          x->parent = y;
-         }
-        }
-      else{
-         RB_Transplant(D, y, y->right);
-         y->right = z->right;
-         y->right->parent = y;
-        }
-      Node del = z;
-      RB_Transplant(T, z, y);
-      y->left = z->left;
-      y->left->parent = y;
-      y->color = z->color;
-      
-          del->parent = NULL;
-          del->right = del->left = NULL;
-          free(del);
-          D->size--;
-        
-    }
-   if(y_original_color == BLACK){
-      RB_DeleteFixUp(D, x);
-    }
-}
 
 //------------ RB fixup for delete ---------------------------------------
 
@@ -507,6 +451,64 @@ RB_DeleteFixUp(Dictionary D, Node x){
         }
     }
    x->color = BLACK
+}
+// ----------------- RB Delete -------------------------------------------------
+
+RB_Delete(Dictionary D, Node z){
+   Node y = z;
+   int y_original_color = y->color;
+   if(z->left == D->NIL){
+      Node x = z->right;
+      Node del = z;
+      RB_Transplant(D, z, x);
+      
+          del->parent = NULL;
+          del->right = del->left = NULL;
+          free(del);
+          D->size--;
+      
+
+    }
+   else if(z->right == D->NIL){
+      Node x = z->left;
+      Node del = z;
+      RB_Transplant(D, z, x);
+      
+          del->parent = NULL;
+          del->right = del->left = NULL;
+          free(del);
+          D->size--;
+       
+   }
+   else{
+      y = TreeMinimum(D, z->right);
+      y_original_color = y->color;
+      Node x = y->right;
+      if(y->parent == z){
+         if(x != D->NIL){
+          x->parent = y;
+         }
+      }
+      else{
+         RB_Transplant(D, y, y->right);
+         y->right = z->right;
+         y->right->parent = y;
+      }
+      Node del = z;
+      RB_Transplant(D, z, y);
+      y->left = z->left;
+      y->left->parent = y;
+      y->color = z->color;
+      
+          del->parent = NULL;
+          del->right = del->left = NULL;
+          free(del);
+          D->size--;
+        
+   }
+   if(y_original_color == BLACK){
+      RB_DeleteFixUp(D, x);
+   }
 }
 
 // delete()
