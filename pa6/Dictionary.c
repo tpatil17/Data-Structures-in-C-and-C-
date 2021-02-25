@@ -276,7 +276,7 @@ void RightRotate(Dictionary D, Node x){
 
 //----------------- RB_InsertFixUp()-------------------------------------
 
-RB_InsertFixUp(Dictionary D,Node z){
+void RB_InsertFixUp(Dictionary D,Node z){
 
     while(z->parent->color == RED){
 
@@ -321,7 +321,7 @@ RB_InsertFixUp(Dictionary D,Node z){
 }
 //--------------------- RB - Tree insert block ----------------------------
 
-RB_Insert(Dictionary D, Node z){
+void RB_Insert(Dictionary D, Node z){
    Node y = D->NIL;
    Node x = D->Root;
    while( x != D->NIL){
@@ -378,7 +378,7 @@ void insert(Dictionary D, KEY_TYPE k, VAL_TYPE v){
 
 //--------------- Transplant -------------------------------------------------
 
-RB_Transplant(Dictionary D, Node u, Node v){
+void RB_Transplant(Dictionary D, Node u, Node v){
    if(u->parent == D->NIL){
       D->Root = v;
     }
@@ -396,7 +396,7 @@ RB_Transplant(Dictionary D, Node u, Node v){
 
 //------------ RB fixup for delete ---------------------------------------
 
-RB_DeleteFixUp(Dictionary D, Node x){
+void RB_DeleteFixUp(Dictionary D, Node x){
    while(x != D->Root && x->color == BLACK){
       if(x == x->parent->left){
          Node w = x->parent->right;
@@ -448,13 +448,14 @@ RB_DeleteFixUp(Dictionary D, Node x){
             w->left->color = BLACK;                   // case 8
             RightRotate(D, x->parent);               // case 8
             x = D->Root;                             // case 8
-        }
-    }
+         }
+      }
+   }
    x->color = BLACK
 }
 // ----------------- RB Delete -------------------------------------------------
 
-RB_Delete(Dictionary D, Node z){
+void RB_Delete(Dictionary D, Node z){
    Node y = z;
    int y_original_color = y->color;
    if(z->left == D->NIL){
