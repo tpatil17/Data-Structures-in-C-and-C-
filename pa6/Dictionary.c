@@ -462,28 +462,27 @@ void RB_Delete(Dictionary D, Node z){
       Node x = z->right;
       Node del = z;
       RB_Transplant(D, z, x);
-      
+      if(y_original_color == BLACK){
+         RB_DeleteFixUp(D, x);
+      }
           del->parent = NULL;
           del->right = del->left = NULL;
           free(del);
           D->size--;
-      if(y_original_color == BLACK){
-         RB_DeleteFixUp(D, x);
-      } 
-
+      
    }
    else if(z->right == D->NIL){
       Node x = z->left;
       Node del = z;
       RB_Transplant(D, z, x);
-      
+      if(y_original_color == BLACK){
+         RB_DeleteFixUp(D, x);
+      }
           del->parent = NULL;
           del->right = del->left = NULL;
           free(del);
           D->size--;
-      if(y_original_color == BLACK){
-         RB_DeleteFixUp(D, x);
-      }
+      
    }
    else{
       y = TreeMinimum(D, z->right);
@@ -504,15 +503,13 @@ void RB_Delete(Dictionary D, Node z){
       y->left = z->left;
       y->left->parent = y;
       y->color = z->color;
-      
+      if(y_original_color == BLACK){
+         RB_DeleteFixUp(D, x);
+      }
           del->parent = NULL;
           del->right = del->left = NULL;
           free(del);
           D->size--;
-      
-      if(y_original_color == BLACK){
-         RB_DeleteFixUp(D, x);
-      }
    }
    
 }
