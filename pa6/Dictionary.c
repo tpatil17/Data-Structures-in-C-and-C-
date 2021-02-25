@@ -451,7 +451,7 @@ void RB_DeleteFixUp(Dictionary D, Node x){
          }
       }
    }
-   x->color = BLACK
+   x->color = BLACK;
 }
 // ----------------- RB Delete -------------------------------------------------
 
