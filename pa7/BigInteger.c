@@ -1,8 +1,9 @@
 #include<string.h>
 #include<stdio.h>
 #include<stdlib.h>
-#include "List.h"
+#include<stdbool.h>
 #include "BigInteger.h"
+#include "List.h"
 #include<math.h>
 #define p 9
 
@@ -19,7 +20,7 @@ typedef struct BigIntegerObj{
 BigInteger newBigInteger(){
     BigInteger B = calloc(1, sizeof(BigIntegerObj));
     B->sign = 0;// empty state
-    B->num_list = new_list();// empty list
+    B->num_list = newList();// empty list
     return B;
 }
 
@@ -29,7 +30,6 @@ void freeBigInteger(BigInteger* pN){
 
     BigInteger B = *pN;
     freeList(&B->num_list);
-    B->sign = NULL;
     free(*pN);
     *pN = NULL;
 }
@@ -130,29 +130,42 @@ BigInteger stringToBigInteger(char* s){
 
     BigInteger B = newBigInteger();
 
-    char* cpy = calloc(1, sizeof(int)*strlen(s));
-    
-    if(strcmp("-",s[0]) == 0){
+    char* cpy = malloc(sizeof(int)*strlen(s));
+    //char *buf = calloc(1, sizeof(int)*strln(s));
+
+int k = 0; 
+
+        
+    if( s[0] == '-'){
         B->sign = -1;
-        for(int i =1; s[i] != '\0'; i++){
-            cpy[i] = s[i];
+        for( int j =1; s[j] != '\0'; j++){
+            cpy[k] = s[j];
+	    k++;
         }
-        cpy[i] = '\0';
+        cpy[k] = '\0';
     }
     else{
         B->sign = 1;
-        for(int i =0; s[i] != '\0'; i++){
-            cpy[i] = s[i];
+        for(int j  =0; s[j] != '\0'; j++){
+            cpy[k] = s[j];
+	    k++;
         }
-        cpy[i] = '\0';
+        cpy[k] = '\0';
     }
+ //   printf("%s\n", s);
+    //printf("%s\n", cpy);
+    //printf("%d\n", strcmp(s, cpy));
     
-    int i = 0;
+    int i = 1;
     long val = 0;
     long buf = 0;
     int ctr =  0;
+    char *digit = calloc(1, sizeof(int));
     while(i <= strlen(cpy)){
-        temp = atoi(cpy[strlen(cpy) - i]);
+
+	digit[0] = cpy[strlen(cpy)-i];
+        temp = atoi(digit);
+//	printf("%ld\n", temp);
         
         if((temp -10) > 0){
             printf("failed pre condition 2 in string to big integer\n");
@@ -165,7 +178,7 @@ BigInteger stringToBigInteger(char* s){
             ctr++; 
             i ++;
         }
-        if(ctr > p || i > strlen(cpy)){
+        if(ctr >= p || i > strlen(cpy)){
             prepend(B->num_list, buf);
             buf = 0;
             ctr = 0;
@@ -174,6 +187,7 @@ BigInteger stringToBigInteger(char* s){
     }
 
     free(cpy);
+    free(digit);
     return B;
 }
 
@@ -182,7 +196,7 @@ BigInteger stringToBigInteger(char* s){
 BigInteger copy(BigInteger N){
     BigInteger C = newBigInteger();
     C->sign = N->sign;
-    freeList(C->num_list);
+    freeList(&C->num_list);
     C->num_list = copyList(N->num_list);
     return C;
 }
@@ -210,14 +224,14 @@ BigInteger sum(BigInteger A, BigInteger B){
             BigInteger C = copy(A);
             C->sign = 1;
             BigInteger R =  diff(B, C);
-            free(C);
+            freeBigInteger(&C);
             return R;
         }
         else{
             BigInteger C = copy(B);
             C->sign = 1;
             BigInteger R =  diff(A, C);
-            free(C);
+            freeBigInteger(&C);
             return R;
         }
     }
@@ -250,7 +264,7 @@ BigInteger sum(BigInteger A, BigInteger B){
         int carry = 0;
         long zero = 0;
         long buf = 0;
-        long base = long(pow(10, p));
+        long base = pow(10, p);
         while(index(R->num_list) != -1 ){
             if(carry == 1){
                 set(R->num_list, get(R->num_list)+1);
@@ -301,14 +315,14 @@ BigInteger diff(BigInteger A, BigInteger B){
             BigInteger C = copy(B);
             C->sign = -1;
             BigInteger R = sum(A, C);
-            freeBigInteger(C);
+            freeBigInteger(&C);
             return R;
         }
         else{                       // A - (- B) = A + B
             BigInteger C = copy(B);
             C->sign = 1;
             BigInteger R = sum(A, C);
-            freeBigInteger(C);
+            freeBigInteger(&C);
             return R;
         }
     }
@@ -318,18 +332,18 @@ BigInteger diff(BigInteger A, BigInteger B){
             BigInteger C = copy(B);
             C->sign = 1;
             BigInteger R = sum(B, A);
-            freeBigInteger(C);
+            freeBigInteger(&C);
             return R;
         }
         else{                       // A - B = A- B
 
-            
+ 	BigInteger R;           
             if(compare(A, B) == -1){
-                BigInteger R  = diff(B, A);
+                R  = diff(B, A);
                 R->sign = -1;
             }
             else{
-                BigInteger R = newBigInteger();
+                R = newBigInteger();
                 moveBack(A->num_list);
                 moveBack(B->num_list);
                 while(index(A->num_list) != -1 && index(B->num_list) != -1){
@@ -343,6 +357,7 @@ BigInteger diff(BigInteger A, BigInteger B){
                         while(index(A->num_list) != -1){
                             prepend(R->num_list, get(A->num_list));
                             movePrev(A->num_list);
+			}
                     }
                     else{
                         printf(" in wrong teritory\n");
@@ -354,7 +369,7 @@ BigInteger diff(BigInteger A, BigInteger B){
                 moveBack(R->num_list);
                 int sub_carry = 0;
                 long temp = 0;
-                long base = long(pow(10, p));
+                long base = pow(10, p);
                 while(index(R->num_list) != -1){
                     if(sub_carry == 1){
                         temp = get(R->num_list) - 1;
@@ -376,16 +391,17 @@ BigInteger diff(BigInteger A, BigInteger B){
                         sub_carry = 0;
                     }
                     movePrev(R->num_list);
+		
                 }
 
                 if(R->sign == 0){
                     R->sign = 1;
                 }
-            }
 
-            return R;
-
-        }
+	    }
+ 	return R;            
+	}
+  
     }
 
 }
@@ -405,6 +421,7 @@ BigInteger prod(BigInteger A, BigInteger B){
 
     
     if(length(A->num_list) < length(B->num_list)){
+        printf("in wrong area");
         return prod(B, A);
     }
     else{
@@ -415,6 +432,7 @@ BigInteger prod(BigInteger A, BigInteger B){
         }
         else if(A->sign == -1 || B->sign == -1){
             if(A->sign ==-1 && B->sign == -1){
+                printf("right sign");
                 R->sign = 1;
             }
             else{
@@ -436,7 +454,7 @@ BigInteger prod(BigInteger A, BigInteger B){
         bool carry = false;
         while(index(B->num_list) != -1){
 
-            BigInteger c newBigInteger();
+            BigInteger c = newBigInteger();
             moveBack(A->num_list);
 
             while(index(A->num_list) != -1){
@@ -445,26 +463,30 @@ BigInteger prod(BigInteger A, BigInteger B){
                 long ctr_2 = 0;
                 while(ctr <= get(A->num_list)){
                     add(buf, buf, B);
+		    //printf("%ld\n", ctr);
                     ctr++;
                 }
-                    
+                 
+               // printList(stdout, buf->num_list);   
                 if(carry == true){
                     add(buf, c, buf);
                     makeZero(c);
                 }               
 
                 while(ctr_2 < (length(A->num_list)-1 - index(A->num_list))){
-                    append(buf, zero);
+                    append(buf->num_list, zero);
                     ctr_2 ++;
                 }
                 add(temp, temp, buf);// temp stores the sum
                     
-
+		//printBigInteger(stdout, temp);
+                //printf("\n");
                 s = copy(temp);
                 ctr_2 = 0;
 
-                while(ctr_2 <= (length(A->num_list)-1 - index(A->num_list))){
-                    deleteBack(s->num_list);
+                while(ctr_2 < (length(A->num_list)-1 - index(A->num_list)) && length(s->num_list) != 0){
+                    //printList(s->num_list);
+		    deleteBack(s->num_list);
                     ctr_2 ++;
                 }
 
@@ -488,7 +510,7 @@ BigInteger prod(BigInteger A, BigInteger B){
                     carry = false;
                     makeZero(c);
                 }
-                freeBigInteger(s);                        
+                freeBigInteger(&s);                        
                 makeZero(buf);
                 movePrev(A->num_list);
             }
@@ -497,19 +519,20 @@ BigInteger prod(BigInteger A, BigInteger B){
                 append(temp->num_list, zero);
                 inc++;
             }
-
+	   // printList(stdout, temp->num_list);
             add(temp_out, temp_out, temp);
             makeZero(temp);
-            freeBigInteger(c);
-            movePrev(B);
+            freeBigInteger(&c);
+            movePrev(B->num_list);
         }
         
-        freeBigInteger(buf);
-        freeBigInteger(temp);
+        freeBigInteger(&buf);
+        freeBigInteger(&temp);
             
-        freeList(R->num_list);
+        freeList(&R->num_list);
         R->num_list = copyList(temp_out->num_list);
-        freeBigInteger(temp_out);
+	//printList(stdout, R->num_list);
+        freeBigInteger(&temp_out);
         return R;
     }
 }
@@ -519,25 +542,54 @@ BigInteger prod(BigInteger A, BigInteger B){
 // printBigInteger()
 // Prints a base 10 string representation of N to filestream out.
 void printBigInteger(FILE* out, BigInteger N){
+
     char *str = calloc(1, length(N->num_list)*sizeof(long));
     char* buf = calloc(1, sizeof(long));
+    char* buf_2 = calloc(1, sizeof(long));
+    long zero = 0;
+    sprintf(buf_2, "%ld", zero);
     int i = 0;
     if(N->sign == 0){
-        fprintf("out", "%s", "0");
+        fprintf(out, "%s\n", "0");
     }
     if(N->sign == -1){
-        str[0] = "-";
+        str[0] = '-';
         i ++;
     }
     moveFront(N->num_list);
     while(index(N->num_list) != -1){
         sprintf(buf, "%ld", get(N->num_list));
+	if(index(N->num_list) != 0){
+
+		while(strlen(buf) < 9){
+			
+		strncat(buf_2, buf, strlen(buf));
+		
+		memcpy(buf, buf_2, strlen(buf_2)+1);
+		
+		free(buf_2);
+		buf_2 = calloc(1, sizeof(long));
+		sprintf(buf_2, "%ld", zero);
+	
+		}
+               
+		
+
+	}
+	
         for(int j = 0; buf[j] != '\0'; j++){
             str[i] = buf[j];
             i++;
         }
-        moveNext(N->num_list);
+	
+        moveNext(N->num_list);    
     }
     str[i] = '\0';
     fprintf(out, "%s", str);
+    
+
+    
+    free(str);
+    free(buf);
+    free(buf_2);
 }

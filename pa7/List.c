@@ -18,7 +18,7 @@
 
 // private NodeObj type
 typedef struct NodeObj{
-   LIST_Epression data;
+   long data;
    struct NodeObj* next;
    struct NodeObj* prev;
 } NodeObj;
@@ -122,7 +122,7 @@ void clear(List L){ // Resets L to its original empty state.
         }
     }
 }
-void set(List L, LIST_Expression x){ // Overwrites the cursor element’s data with x.
+void set(List L, long x){ // Overwrites the cursor element’s data with x.
  // Pre: length()>0, index()>=0
     if(length(L) <= 0){
         printf("\n Error encountered in set(), len is 0  or less\n");
@@ -181,7 +181,7 @@ void moveNext(List L){ // If cursor is defined and not at back, move cursor one
         }
     }
 }
-void prepend(List L, LIST_Expression x){ // Insert new element into L. If L is non-empty,
+void prepend(List L, long x){ // Insert new element into L. If L is non-empty,
  // insertion takes place before front element.
     Node N = malloc(sizeof(NodeObj));
     N->data = x;
@@ -198,7 +198,7 @@ void prepend(List L, LIST_Expression x){ // Insert new element into L. If L is n
     }
     L->length++;
 }
-void append(List L, LIST_Expression x){ // Insert new element into L. If L is non-empty,
+void append(List L, long x){ // Insert new element into L. If L is non-empty,
  // insertion takes place after back element.
     Node N = malloc(sizeof(NodeObj));
     N->data = x;
@@ -215,7 +215,7 @@ void append(List L, LIST_Expression x){ // Insert new element into L. If L is no
     L->length++;
 
 }
-void insertBefore(List L, LIST_Expression x){ // Insert new element before cursor.
+void insertBefore(List L, long x){ // Insert new element before cursor.
  // Pre: length()>0, index()>=0
 	Node N = malloc(sizeof(NodeObj));
 	N->data = x;
@@ -244,7 +244,7 @@ void insertBefore(List L, LIST_Expression x){ // Insert new element before curso
     	}
     L->length++;
 }
-void insertAfter(List L, LIST_Expression x){ // Insert new element after cursor.
+void insertAfter(List L, long x){ // Insert new element after cursor.
  // Pre: length()>0, index()>=0
     Node N = malloc(sizeof(NodeObj));
     N->data = x;
@@ -310,23 +310,44 @@ void deleteBack(List L){ // Delete the back element. Pre: length()>0
 }
 void delete(List L){ // Delete cursor element, making cursor undefined.
 // Pre: length()>0, index()>=0
-    if(length(L) <= 0){
-        printf("\nError ind delete, list size is 0 or less\n");
-        exit(EXIT_FAILURE);
-    }
-    if(index(L)< 0){
-        printf("\n Error in delete, index is less than 0.\n");
-        exit(EXIT_FAILURE);
-    }
-    Node temp1 = NULL;
-    Node temp2 = NULL; 
-    temp1 = L->cursor->prev;
-    temp2 = L->cursor->next;
-    temp1->next = temp2;
-    temp2->prev = temp1;
-    free(L->cursor);
-    L->cursor = NULL;
-    L->length--;
+   	    if(length(L) <= 0){
+		printf("\nError ind delete, list size is 0 or less\n");
+		exit(EXIT_FAILURE);
+	    }
+	    if(index(L)< 0){
+		printf("\n Error in delete, index is less than 0.\n");
+		exit(EXIT_FAILURE);
+	    }
+	    Node temp1 = NULL;
+	    Node temp2 = NULL;
+	if(L->front == L->cursor && L->back == L->cursor){
+	L->cursor->prev = NULL;
+	L->cursor->next = NULL;
+	free(L->cursor);
+	L->cursor = NULL;
+	L->index = -1;
+	L->length --;
+	}
+    else if(L->front == L->cursor){
+	deleteFront(L);
+	L->index = -1;
+	L->cursor = NULL;
+	}
+    else if(L->back == L->cursor){
+	deleteBack(L);
+	L->index = -1;
+	L->cursor = NULL;
+	}
+    else{ 
+ 	 temp1 = L->cursor->prev;
+   	 temp2 = L->cursor->next;
+   	 temp1->next = temp2;
+    	 temp2->prev = temp1;
+   	 free(L->cursor);
+   	 L->cursor = NULL;
+	 L->index = -1;
+	L->length --;
+	}
 }
 // Other operations -----------------------------------------------------------
 void printList(FILE* out, List L){ // Prints to the file pointed to by out, a
