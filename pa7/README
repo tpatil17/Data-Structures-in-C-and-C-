@@ -1,0 +1,25 @@
+/*********************************************************************************
+ *** Tanishq Patil, tmpatil
+ *** 2021 Winter CSE 101 pa7
+ *** 
+ *** README file describing each file in pa7
+ *** 
+ ***********************************************************************************/
+
+
+List.h : The header file provided by TA
+
+List.c: The code for List ADT in C language.
+
+BigInteger.h: The header file for BigInteger ADT.
+
+BigInteger.c: The source code for header file BigInteger.h
+
+Arithmetic.c: The Client file for pa4
+
+ListTest.c: file used to run tests on List functions and fix bugs
+
+BigIntegerTest.c : Test cases to test BigInteger functions.
+
+Makefile: Builder, it builds the program on typing make.
+

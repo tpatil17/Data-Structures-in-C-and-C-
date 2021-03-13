@@ -1,3 +1,13 @@
+/*************************************************************************
+ *
+ * Tanishq Patil, CSE101 Winter 2021, pa7
+ *
+ * Tmpatil
+ *
+ * client file for pa7
+ * **********************************************************************/
+
+
 #include<string.h>
 #include<stdio.h>
 #include "List.h"
@@ -32,23 +42,23 @@ int main(int argc, char *argv[]){
 
    char line[300]; 
 
-   fgets(line, 300, in);
+   fscanf(in, "%s", line);
 
    int size_1 = atoi(line);
 
    char *str_1 = calloc(1, sizeof(size_1)+1);
 
-   fgets(str_1, size_1+1, in);
+   fscanf(in, "%s", str_1);
 
    BigInteger A = stringToBigInteger(str_1);
 
-   fgets(line, 300, in);
+   fscanf(in, "%s", line);
 
    int size_2 = atoi(line);
 
    char* str_2 = calloc(1, sizeof(size_2)+1);
 
-   fgets(str_2, size_2 + 1,in); 
+   fscanf(in, "%s", str_2); 
 
    BigInteger B = stringToBigInteger(str_2);
 
@@ -65,118 +75,39 @@ int main(int argc, char *argv[]){
 
   fprintf(out, "\n\n");
 
-  printBigInteger(out, B);
+  printBigInteger(out, B);// print B
 
   fprintf(out, "\n\n");
 
-  BigInteger C = sum(A, B);
+
+  BigInteger C = sum(A, B); // A + B
 
   printBigInteger(out, C);
 
   fprintf(out, "\n\n");
 
-  subtract(C, A, B);
+  subtract(C, A, B);  // A - B
 
   printBigInteger(out, C);
 
   fprintf(out, "\n\n");
 
-  subtract(C, A, A);
-
-  printBigInteger(out, C);
-
-  fprintf(out, "\n\n");
-
-  BigInteger F = sum(A, A);
-
-  add(F, F, A);
-
-  BigInteger G = sum(B, B);
-
-  subtract(F, F, G);
-
-  printBigInteger(out, F);
-
-  fprintf(out, "\n\n");
-
-  multiply(F, A, B);
-
-  printBigInteger(out, F);
-
-  fprintf(out, "\n\n");
-
-  multiply(F, A, A);
-
-  printBigInteger(out, F);
-
-  fprintf(out, "\n\n");
   
-  multiply(G, B, B);
-
-  printBigInteger(out, G);
-
-  fprintf(out, "\n\n");
-
-  // A^4
-  //
-  multiply(F, F, F);
-
-
-  multiply(G, G, G);
-
-  multiply(G, G, B);
-
-
-  int i = 4;
-
-  char buf[300];
-
-  sprintf(buf, "%d", i);
-
-  BigInteger new = stringToBigInteger(buf);
-
-  i = 16;
-
-  BigInteger sec;
-
-  sprintf(buf, "%d", i);
-  
-  sec = stringToBigInteger(buf);
-
-
-  multiply(F, F, new);
-
-  multiply(G, G, sec);
-
-
-  add(F, F, G);
-
-
-  printBigInteger(out, F);
-
-  fprintf(out, "\n\n");
-
-  freeBigInteger(&F);
-
-  freeBigInteger(&G);
-
-  freeBigInteger(&A);
-
-  freeBigInteger(&B);
-
-  freeBigInteger(&C);
-
-  freeBigInteger(&new);
- 
-  freeBigInteger(&sec);
-
-  fclose(out);
-
-  fclose(in);
-
-  free(str_1);
-
-  free(str_2);
+//printf("peoblem in sub\n");
+  subtract(C, A, A); // A - A
 	
+printf(" no problem in subract\n");
 
+  printBigInteger(out, C);
+
+printf(" no problem in pintig 0\n");
+
+  fprintf(out, "\n\n");
+// end of first 3
+	
+free(str_1);
+free(str_2);
+freeBigInteger(&A);
+freeBigInteger(&C);
+freeBigInteger(&B);
 }

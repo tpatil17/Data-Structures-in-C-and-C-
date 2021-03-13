@@ -1,3 +1,14 @@
+/*****************************************************************************************
+ * Tmpatil, CSE101 winter 2021 pa7
+ * 
+ * Tanishq Patil
+ *
+ * BigInteger.c a source code file for BigInteger ADT
+ *
+ * *************************************************************************************/
+
+
+
 #include<string.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -27,7 +38,7 @@ BigInteger newBigInteger(){
 // freeBigInteger()
 // Frees heap memory associated with *pN, sets *pN to NULL.
 void freeBigInteger(BigInteger* pN){
-if(*pN == NULL){
+if(*pN == NULL && pN == NULL){
 	return;
 }
     BigInteger B = *pN;
@@ -136,10 +147,9 @@ BigInteger stringToBigInteger(char* s){
 
     BigInteger B = newBigInteger();
 
-    char* cpy = malloc(sizeof(int)*strlen(s));
-    //char *buf = calloc(1, sizeof(int)*strln(s));
+    char* cpy = calloc(1, sizeof(int)*strlen(s));
 
-int k = 0; 
+   int k = 0; 
 
         
     if( s[0] == '-'){
@@ -203,6 +213,8 @@ int k = 0;
     free(cpy);
     free(digit);
     return B;
+
+	
 }
 
 // copy()
@@ -225,10 +237,17 @@ void add(BigInteger S, BigInteger A, BigInteger B){
      BigInteger R = sum(A, B);
 
      S->sign = R->sign;
-	
-     freeList(&S->num_list);
 
-     S->num_list = copyList(R->num_list);
+     clear(S->num_list);
+
+     for(moveFront(R->num_list); index(R->num_list) !=-1; moveNext(R->num_list)){
+
+
+	append(S->num_list, get(R->num_list));
+
+     }
+
+     
 
      freeBigInteger(&R);
     
@@ -335,8 +354,8 @@ void subtract(BigInteger D, BigInteger A, BigInteger B){
 
 // diff()
 // Returns a reference to a new BigInteger object representing A - B.
-BigInteger diff(BigInteger A, BigInteger B){
-    
+BigInteger diff(BigInteger A, BigInteger B){ 
+   
     if(A->sign == 0){
         negate(B);
         return B;
@@ -467,12 +486,12 @@ void multiply(BigInteger P, BigInteger A, BigInteger B){
 
 BigInteger scalar_multiply(BigInteger B, long x){
 
-	char *buf = calloc(1, sizeof(double));
+	char *buf = calloc(1, sizeof(long long)*4);
 	BigInteger R = newBigInteger();
 	
 	R->sign = 1;
 	
-
+	BigInteger temp = newBigInteger();
 	BigInteger carry = newBigInteger();
 
 	bool c = false;
@@ -480,11 +499,18 @@ BigInteger scalar_multiply(BigInteger B, long x){
 	// multply nodes
 	moveBack(B->num_list);
 	while(index(B->num_list) != -1){
-	
+		
 		// multiply nodes, store as a string
-		sprintf(buf, "%ld", x*get(B->num_list));
+		long long l = x*get(B->num_list);
+		sprintf(buf, "%lld", l);
 		// store the string as a big int in temp
-		BigInteger temp = stringToBigInteger(buf);
+		BigInteger temp_2 = stringToBigInteger(buf);
+
+		clear(temp->num_list);
+		temp->num_list = copyList(temp_2->num_list);
+		temp->sign = temp_2->sign;
+		freeBigInteger(&temp_2);
+
 		// check for carry
 		if(c == true){
 			add(temp, temp, carry);
@@ -521,10 +547,10 @@ BigInteger scalar_multiply(BigInteger B, long x){
 			prepend(R->num_list, back(temp->num_list));
 		}
 		
-		movePrev(B->num_list);
-		freeBigInteger(&temp);				
+		movePrev(B->num_list);				
 	
 	}
+	freeBigInteger(&temp);
 	freeBigInteger(&carry);	
 	free(buf);
 
@@ -549,12 +575,12 @@ BigInteger prod(BigInteger A, BigInteger B){
 	moveBack(A->num_list);
 
 	while(index(A->num_list) != -1){
-		
+	//	printf("%ld\n", get(A->num_list));
 		int ctr = 0;
 	        BigInteger temp = scalar_multiply(B , get(A->num_list));
 
 		while(ctr < ((length(A->num_list) - index(A->num_list)) -1)){
-	
+//			printf("%d\n", ctr);
 			append(temp->num_list, zero);
 			ctr++;
 		}
@@ -562,7 +588,8 @@ BigInteger prod(BigInteger A, BigInteger B){
 		add(product, product, temp);
 
 		freeBigInteger(&temp);
-
+		//printList(stdout, product->num_list);
+		//printf("\n");
 		movePrev(A->num_list);
 	} 
 
@@ -589,23 +616,32 @@ BigInteger prod(BigInteger A, BigInteger B){
 // Prints a base 10 string representation of N to filestream out.
 void printBigInteger(FILE* out, BigInteger N){
 
+    if(N->sign == 0){
+	
+	fprintf(out, "%d", 0);
+
+	return;
+
+    }
+
     char *str = calloc(1, length(N->num_list)*sizeof(long));
     char* buf = calloc(1, sizeof(long));
     char* buf_2 = calloc(1, sizeof(long));
     long zero = 0;
     sprintf(buf_2, "%ld", zero);
     int i = 0;
-    if(N->sign == 0){
-        fprintf(out, "%s\n", "0");
-    }
+   
     if(N->sign == -1){
         str[0] = '-';
         i ++;
     }
+
     moveFront(N->num_list);
     while(index(N->num_list) != -1){
+       
         sprintf(buf, "%ld", get(N->num_list));
-	if(index(N->num_list) != 0){
+	
+	if(index(N->num_list) > 0){
 
 		while(strlen(buf) < 9){
 			
@@ -637,5 +673,6 @@ void printBigInteger(FILE* out, BigInteger N){
     
     free(str);
     free(buf);
-    free(buf_2);
+    free(buf_2); 
+
 }

@@ -1,106 +1,62 @@
-#include "BigInteger.h"
-#include<stdlib.h>
-#include<string.h>
-#include<stdio.h>
-#include "List.h"
+/******************************************************************************
+ * Tanishq, Patil, Tmpatil
+ *
+ * 2021 Winter, cse101, pa7
+ *
+ * test for BigInteger
+ * *******************************************************************************/
 
+
+#include<stdio.h>
+#include<string.h>
+#include "BigInteger.h"
+#include "List.h"
+#include<stdlib.h>
 
 int main(){
 
 
-	BigInteger A, B, D;
-   char str1[] = "-12";
-   char str3[] = "-1";
-   char str2[] = "9876545439874329879874320000000005432";
-   
-   A = stringToBigInteger(str1);
-   printf("A = ");
-  
-   printBigInteger(stdout, A);
-   
-  // printf("%d", sign(A));
+	char str1[] = "-43549940394309403949020302930923909434095855999";
+	char str2[] = "90234848848846384387582474835934937597946894985888";
 
-   printf("\n");
+	BigInteger A; 
+	BigInteger B;
 
-   B = stringToBigInteger(str2);
-   printf("B = ");
-   printBigInteger(stdout, B);
-   printf("\n");
+	A = stringToBigInteger(str1);
 
-   BigInteger C = sum(A, B);
+	B = stringToBigInteger(str2);
 
-   add(C, A, B);
+	printBigInteger(stdout, A);
+	printf("\n");
+	printBigInteger(stdout, B);
+	printf("\n");
 
-   printf("C =");
+	add(A, A, B);
 
-   printBigInteger(stdout, C);
-   printf("\n");
- 
-   D = diff(A, B);
+	printBigInteger(stdout, A);
 
-   printf("D = ");
+	subtract(A, A, B);
 
-   printBigInteger(stdout, D);
-   printf("\n");
+	printf("\n");
+
+	printBigInteger(stdout, A);
+
+	printf("\n");
 
 
-   BigInteger E;
-
-   E = copy(A);
-
-   printf("E =");
 
 
-   BigInteger new = stringToBigInteger(str3);  
+	multiply(A, A, B);
 
-   printBigInteger(stdout, E);
+	printBigInteger(stdout, A);
 
- 
-  printf("\n"); 
-  
-   BigInteger ans = prod(new, A);
-printf( " ans = \n");
-   printBigInteger(stdout, ans);
+	printf("\n");
 
-  printf("\n");
+	freeBigInteger(&A);
 
-  
-
-  BigInteger pA = stringToBigInteger("+111122223333");
-  BigInteger pB = stringToBigInteger("+222211110000");
-  BigInteger pC = newBigInteger();
-
- // printf("3 var properly declared\n");
-
-  BigInteger pD = stringToBigInteger("+333333333333");
-            add(pC, pA, pB);
-  //printf("problem after add\n");
-
-  printBigInteger(stdout, pD);
-	
-  printf("\n");
-//  printf("problem in printbig\n");
-
-  printBigInteger(stdout, pC);
-
-  printf("\n");
+	freeBigInteger(&B);
 
 
-  if(!equals(pC, pD)) printf("true");
-  
-
-   pB = stringToBigInteger("-111122223333");
-   add(pC, pA, pB);
-   printBigInteger(stdout, pC);
-   printf("\n");
-   if(sign(pC) != 0) printf("%d\n", sign(pC));
-            
-
-
-  freeBigInteger(&pB);
-  freeBigInteger(&pD);
- 
- 
 }
 
 

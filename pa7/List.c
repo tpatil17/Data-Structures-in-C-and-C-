@@ -89,7 +89,7 @@ long get(List L){ // Returns cursor element of L. Pre: length()>0, index()>=0
     }
     if(index(L) < 0){
         printf("\n index invalid\n");
-        return -1;
+        exit(EXIT_FAILURE);
     }
     return L->cursor->data;
 }
