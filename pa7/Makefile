@@ -6,14 +6,14 @@
 #  make memcheck            tests for memory leaks
 #------------------------------------------------------------------------------
 
-CLIENT         = ListTest
-#ADT1           = BigInteger
+CLIENT         = BigIntegerTest
+ADT1           = BigInteger
 ADT2           = List
 SOURCE         = $(CLIENT).c
 OBJECT         = $(CLIENT).o
-#ADT1_SOURCE    = $(ADT1).c
-#ADT1_OBJECT    = $(ADT1).o
-#ADT1_HEADER    = $(ADT1).h
+ADT1_SOURCE    = $(ADT1).c
+ADT1_OBJECT    = $(ADT1).o
+ADT1_HEADER    = $(ADT1).h
 ADT2_SOURCE    = $(ADT2).c
 ADT2_OBJECT    = $(ADT2).o
 ADT2_HEADER    = $(ADT2).h

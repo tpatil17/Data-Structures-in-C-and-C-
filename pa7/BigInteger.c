@@ -27,7 +27,9 @@ BigInteger newBigInteger(){
 // freeBigInteger()
 // Frees heap memory associated with *pN, sets *pN to NULL.
 void freeBigInteger(BigInteger* pN){
-
+if(*pN == NULL){
+	return;
+}
     BigInteger B = *pN;
     freeList(&B->num_list);
     free(*pN);
@@ -61,6 +63,10 @@ int compare(BigInteger A, BigInteger B){
     }
     if(A->sign > B->sign){
         return 1;
+    }
+
+    if(A->sign == 0 && B->sign == 0){
+	return 0;
     }
 
     // compare each node
@@ -144,6 +150,17 @@ int k = 0;
         }
         cpy[k] = '\0';
     }
+    else if(s[0] == '+'){
+
+	B->sign =1;
+
+        for(int j =1; s[j] != '\0'; j++){
+
+		cpy[k]=s[j];
+		k++;
+	}
+    	cpy[k] = '\0';
+    }
     else{
         B->sign = 1;
         for(int j  =0; s[j] != '\0'; j++){
@@ -152,9 +169,7 @@ int k = 0;
         }
         cpy[k] = '\0';
     }
- //   printf("%s\n", s);
-    //printf("%s\n", cpy);
-    //printf("%d\n", strcmp(s, cpy));
+ 
     
     int i = 1;
     long val = 0;
@@ -165,7 +180,6 @@ int k = 0;
 
 	digit[0] = cpy[strlen(cpy)-i];
         temp = atoi(digit);
-//	printf("%ld\n", temp);
         
         if((temp -10) > 0){
             printf("failed pre condition 2 in string to big integer\n");
@@ -206,7 +220,17 @@ BigInteger copy(BigInteger N){
 // current state:  S = A + B
 void add(BigInteger S, BigInteger A, BigInteger B){
 
-    S = sum(A, B);
+     
+
+     BigInteger R = sum(A, B);
+
+     S->sign = R->sign;
+	
+     freeList(&S->num_list);
+
+     S->num_list = copyList(R->num_list);
+
+     freeBigInteger(&R);
     
 }
 
@@ -296,7 +320,17 @@ BigInteger sum(BigInteger A, BigInteger B){
 // Places the difference of A and B in the existing BigInteger D, overwriting 
 // its current state:  D = A - B
 void subtract(BigInteger D, BigInteger A, BigInteger B){
-    D = diff(A, B);
+   
+
+     BigInteger R = diff(A, B);
+
+     D->sign = R->sign;
+
+     freeList(&D->num_list);
+
+     D->num_list = copyList(R->num_list);
+
+     freeBigInteger(&R);
 }
 
 // diff()
@@ -331,15 +365,16 @@ BigInteger diff(BigInteger A, BigInteger B){
 
             BigInteger C = copy(B);
             C->sign = 1;
-            BigInteger R = sum(B, A);
+            BigInteger R = sum(C, A);
             freeBigInteger(&C);
             return R;
         }
         else{                       // A - B = A- B
 
  	BigInteger R;           
-            if(compare(A, B) == -1){
-                R  = diff(B, A);
+            if(length(A->num_list) < length(B->num_list)){
+                
+		R  = diff(B, A);
                 R->sign = -1;
             }
             else{
@@ -394,8 +429,12 @@ BigInteger diff(BigInteger A, BigInteger B){
 		
                 }
 
-                if(R->sign == 0){
-                    R->sign = 1;
+		if(R->sign == 0){
+		   R->sign = 1;
+		}
+                if(equals(A, B) == 1){
+ 
+			R->sign = 0;
                 }
 
 	    }
@@ -411,130 +450,137 @@ BigInteger diff(BigInteger A, BigInteger B){
 // its current state:  P = A*B
 void multiply(BigInteger P, BigInteger A, BigInteger B){
 
-    P = prod(A, B);
+
+
+     BigInteger R = prod(A, B);
+
+     P->sign = R->sign;
+
+    freeList(&P->num_list);
+
+     P->num_list = copyList(R->num_list);
+
+     freeBigInteger(&R);
+   
 
 }
 
+BigInteger scalar_multiply(BigInteger B, long x){
+
+	char *buf = calloc(1, sizeof(double));
+	BigInteger R = newBigInteger();
+	
+	R->sign = 1;
+	
+
+	BigInteger carry = newBigInteger();
+
+	bool c = false;
+
+	// multply nodes
+	moveBack(B->num_list);
+	while(index(B->num_list) != -1){
+	
+		// multiply nodes, store as a string
+		sprintf(buf, "%ld", x*get(B->num_list));
+		// store the string as a big int in temp
+		BigInteger temp = stringToBigInteger(buf);
+		// check for carry
+		if(c == true){
+			add(temp, temp, carry);
+		}
+		// check for the size of temp, and if carry is required.
+		if(length(temp->num_list) > 1){
+			// if first node carry no required
+			if(index(B->num_list) == 0){
+				c = false;
+			}
+			// carry is ncessary
+			else{
+				c = true;
+				// nullify carry
+				makeZero(carry);
+				// update the carry
+				carry->sign = 1;
+				append(carry->num_list,front(temp->num_list)); 	
+			}			
+
+		}
+		// if it is final addition prepend the entire temp
+		if(index(B->num_list) == 0){
+
+			for(moveBack(temp->num_list); index(temp->num_list) != -1; movePrev(temp->num_list)){
+
+				prepend(R->num_list, get(temp->num_list));
+			}
+		}
+
+		// just prepend the back of the temp list
+		else{
+
+			prepend(R->num_list, back(temp->num_list));
+		}
+		
+		movePrev(B->num_list);
+		freeBigInteger(&temp);				
+	
+	}
+	freeBigInteger(&carry);	
+	free(buf);
+
+	return R;
+}
 // prod()
 // Returns a reference to a new BigInteger object representing A*B
 BigInteger prod(BigInteger A, BigInteger B){
 
-    
-    if(length(A->num_list) < length(B->num_list)){
-        printf("in wrong area");
-        return prod(B, A);
-    }
-    else{
-        BigInteger R = newBigInteger();
-        if(A->sign == 0 || B->sign == 0){
-            R->sign = 0;
-            return R;
-        }
-        else if(A->sign == -1 || B->sign == -1){
-            if(A->sign ==-1 && B->sign == -1){
-                printf("right sign");
-                R->sign = 1;
-            }
-            else{
-                R->sign = -1;
-            }
-        }
-        else{
+	if(A->sign == 0 || B->sign == 0){
+		
+		BigInteger ret = newBigInteger();
 
-            R->sign = 1;
-        }
+		return ret;
+	}
 
-        moveBack(A->num_list);
-        moveBack(B->num_list);
-        long zero = 0;
-        BigInteger buf = newBigInteger();
-        BigInteger temp = newBigInteger();
-        BigInteger temp_out = newBigInteger();
-        long inc = 0;
-        bool carry = false;
-        while(index(B->num_list) != -1){
+	long zero = 0;
 
-            BigInteger c = newBigInteger();
-            moveBack(A->num_list);
+	BigInteger product = newBigInteger(); 
 
-            while(index(A->num_list) != -1){
-                BigInteger s;
-                long ctr = 1;
-                long ctr_2 = 0;
-                while(ctr <= get(A->num_list)){
-                    add(buf, buf, B);
-		    //printf("%ld\n", ctr);
-                    ctr++;
-                }
-                 
-               // printList(stdout, buf->num_list);   
-                if(carry == true){
-                    add(buf, c, buf);
-                    makeZero(c);
-                }               
 
-                while(ctr_2 < (length(A->num_list)-1 - index(A->num_list))){
-                    append(buf->num_list, zero);
-                    ctr_2 ++;
-                }
-                add(temp, temp, buf);// temp stores the sum
-                    
-		//printBigInteger(stdout, temp);
-                //printf("\n");
-                s = copy(temp);
-                ctr_2 = 0;
+	moveBack(A->num_list);
 
-                while(ctr_2 < (length(A->num_list)-1 - index(A->num_list)) && length(s->num_list) != 0){
-                    //printList(s->num_list);
-		    deleteBack(s->num_list);
-                    ctr_2 ++;
-                }
+	while(index(A->num_list) != -1){
+		
+		int ctr = 0;
+	        BigInteger temp = scalar_multiply(B , get(A->num_list));
 
-                if(length(s->num_list) >= 1){ // number needs to be carried forward
-                    if(index(A->num_list) == 0){
-                        carry = false;
-                        makeZero(c);
-                    }
-                    else{
-                        add(c, c, s);
-                        while(ctr_2 != 0){
-                            append(s->num_list, zero);
-                            ctr_2 --;
-                        }
-                        subtract(temp, temp, s);
-                        carry = true;
-                    }
-                }
-                    
-                else{
-                    carry = false;
-                    makeZero(c);
-                }
-                freeBigInteger(&s);                        
-                makeZero(buf);
-                movePrev(A->num_list);
-            }
+		while(ctr < ((length(A->num_list) - index(A->num_list)) -1)){
+	
+			append(temp->num_list, zero);
+			ctr++;
+		}
+		
+		add(product, product, temp);
 
-            while(inc < length(B->num_list)-1 - index(B->num_list)){
-                append(temp->num_list, zero);
-                inc++;
-            }
-	   // printList(stdout, temp->num_list);
-            add(temp_out, temp_out, temp);
-            makeZero(temp);
-            freeBigInteger(&c);
-            movePrev(B->num_list);
-        }
+		freeBigInteger(&temp);
+
+		movePrev(A->num_list);
+	} 
+
+	if(A->sign == -1 || B->sign == -1){
+		
+	    if(A->sign == -1 && B->sign == -1){
+		product->sign = 1;
+	    }
+
+	    else{ product->sign = -1;}
+	} 
+	else{
+
+		product->sign = 1;
+	}  
+
+	return product;
         
-        freeBigInteger(&buf);
-        freeBigInteger(&temp);
-            
-        freeList(&R->num_list);
-        R->num_list = copyList(temp_out->num_list);
-	//printList(stdout, R->num_list);
-        freeBigInteger(&temp_out);
-        return R;
-    }
 }
 
 // Other operations -----------------------------------------------------------

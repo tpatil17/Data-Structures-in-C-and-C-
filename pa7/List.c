@@ -85,7 +85,7 @@ long back(List L){ // Returns back element of L. Pre: length()>0
 long get(List L){ // Returns cursor element of L. Pre: length()>0, index()>=0
     if(length(L) <= 0){
         printf("\n length of the given list is 0  or less\n");
-        return -1;
+        exit(EXIT_FAILURE);
     }
     if(index(L) < 0){
         printf("\n index invalid\n");
@@ -94,7 +94,7 @@ long get(List L){ // Returns cursor element of L. Pre: length()>0, index()>=0
     return L->cursor->data;
 }
 
-int equals(List A, List B){// Returns true (1) iff Lists A and B are in same
+int list_equals(List A, List B){// Returns true (1) iff Lists A and B are in same
 // state, and returns false (0) otherwise.
     int eq =0;
     Node N = NULL;
