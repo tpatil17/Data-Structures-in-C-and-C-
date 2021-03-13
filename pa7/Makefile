@@ -8,7 +8,7 @@
 #  make memcheck            tests for memory leaks
 #------------------------------------------------------------------------------
 
-CLIENT         = Aritmetic
+CLIENT         = Arithmetic
 ADT1           = BigInteger
 ADT2           = List
 LIST_TEST      = ListTest
